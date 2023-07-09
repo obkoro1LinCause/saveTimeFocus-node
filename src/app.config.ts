@@ -24,17 +24,3 @@ export const CROSS_DOMAIN = {
     allowedReferer: '',
 }
 
-// // 数据库配置
-// export const DATABASE = {
-//     type: 'mysql',
-//     host: 'localhost',
-//     port: isDevEnv ? 3306:0,
-//     username: 'root',
-//     password: 'HHl070300001111',
-//     database: 'test',
-//     entities: ["dist/modules/**/*.entity{.ts,.js}"],
-//     synchronize: true,
-//     charset: 'utf8mb4',
-//     logging: false,
-// }
-

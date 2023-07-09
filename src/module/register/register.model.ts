@@ -1,6 +1,5 @@
 import { Entity, Column,BaseEntity,PrimaryGeneratedColumn } from 'typeorm';
 import { getProviderByModelClass } from '@app/transformers/model.transformer';
-
 @Entity()
 export class Register  extends BaseEntity{
 

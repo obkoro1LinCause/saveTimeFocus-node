@@ -8,7 +8,5 @@ export class AppController {
   @Responser.handle('App_Info api')
   root(): any {
     return APP_CONFIG.PROJECT
-    // return Promise.resolve(APP_CONFIG.PROJECT)
-    // return Promise.reject(1)
   }
 }
