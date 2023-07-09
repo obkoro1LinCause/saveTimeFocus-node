@@ -14,6 +14,7 @@ const value_constant_1 = require("../constants/value.constant");
 const app_environment_1 = require("../app.environment");
 let HttpExceptionFilter = exports.HttpExceptionFilter = class HttpExceptionFilter {
     catch(exception, host) {
+        console.log(exception, '--exception--');
         const request = host.switchToHttp().getRequest();
         const response = host.switchToHttp().getResponse();
         const exceptionStatus = exception.getStatus() || common_1.HttpStatus.INTERNAL_SERVER_ERROR;

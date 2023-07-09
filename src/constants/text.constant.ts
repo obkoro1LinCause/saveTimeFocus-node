@@ -1,6 +1,5 @@
 
 // 文案
-
 export const HTTP_ERROR_SUFFIX = ' failed'
 export const HTTP_SUCCESS_SUFFIX = ' succeed'
 export const HTTP_DEFAULT_TEXT = 'request'

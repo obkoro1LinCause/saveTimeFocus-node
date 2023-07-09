@@ -6,6 +6,7 @@ const ROOT_PATH = (0, path_1.join)(__dirname, '..');
 const packageJSON = require((0, path_1.resolve)(ROOT_PATH, 'package.json'));
 exports.APP = {
     PORT: 8010,
+    STATIC_URL: ''
 };
 exports.PROJECT = {
     name: packageJSON.name,

@@ -29,6 +29,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const helmet_1 = __importDefault(require("helmet"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const compression_1 = __importDefault(require("compression"));
+require("reflect-metadata");
 const core_1 = require("@nestjs/core");
 const app_module_1 = require("./app.module");
 const app_config_1 = require("./app.config");
@@ -39,6 +40,7 @@ const logging_interceptor_1 = require("./interceptors/logging.interceptor");
 const logger_1 = __importDefault(require("./utils/logger"));
 const APP_CONFIG = __importStar(require("./app.config"));
 const app_environment_1 = require("./app.environment");
+const swagger_1 = require("@nestjs/swagger");
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule, app_environment_1.isProdEnv ? { logger: false } : {});
     app.use((0, helmet_1.default)());
@@ -47,6 +49,13 @@ async function bootstrap() {
     app.use(body_parser_1.default.urlencoded({ extended: true }));
     app.useGlobalFilters(new error_filter_1.HttpExceptionFilter());
     app.useGlobalInterceptors(new transform_interceptor_1.TransformInterceptor(), new error_interceptor_1.ErrorInterceptor(), new logging_interceptor_1.LoggingInterceptor());
+    const options = new swagger_1.DocumentBuilder()
+        .setTitle('save-time-focus-serve')
+        .setDescription('接口文档')
+        .setVersion('1.0')
+        .build();
+    const document = swagger_1.SwaggerModule.createDocument(app, options);
+    swagger_1.SwaggerModule.setup('swagger-doc', app, document);
     await app.listen(app_config_1.APP.PORT);
 }
 bootstrap().then(() => {

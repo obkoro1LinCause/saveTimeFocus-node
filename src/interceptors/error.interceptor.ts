@@ -6,7 +6,7 @@ import { getResponserOptions } from '@app/decorators/responser.decorator'
 import { HttpCustomError } from '@app/errors/custom.error'
 import * as TEXT from '@app/constants/text.constant'
 
-
+// 使用@Injectable来声明一个类
 /**
  * @class ErrorInterceptor
  * @classdesc catch error when controller Promise rejected

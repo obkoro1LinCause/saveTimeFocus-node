@@ -10,12 +10,14 @@ exports.RegisterModule = void 0;
 const common_1 = require("@nestjs/common");
 const register_service_1 = require("./register.service");
 const register_controller_1 = require("./register.controller");
+const register_model_1 = require("./register.model");
 let RegisterModule = exports.RegisterModule = class RegisterModule {
 };
 exports.RegisterModule = RegisterModule = __decorate([
     (0, common_1.Module)({
         controllers: [register_controller_1.RegisterController],
-        providers: [register_service_1.RegisterService]
+        providers: [register_model_1.RegisterProvider, register_service_1.RegisterService],
+        exports: [register_service_1.RegisterService],
     })
 ], RegisterModule);
 //# sourceMappingURL=register.module.js.map

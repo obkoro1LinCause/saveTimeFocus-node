@@ -9,10 +9,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
 const app_controller_1 = require("./app.controller");
+const mysql_module_1 = require("./processors/database/mysql.module");
 const cors_middleware_1 = require("./middlewares/cors.middleware");
 const origin_middleware_1 = require("./middlewares/origin.middleware");
-const login_module_1 = require("./module/login/login.module");
-const user_module_1 = require("./module/user/user.module");
 const register_module_1 = require("./module/register/register.module");
 let AppModule = exports.AppModule = class AppModule {
     configure(consumer) {
@@ -21,7 +20,7 @@ let AppModule = exports.AppModule = class AppModule {
 };
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
-        imports: [login_module_1.LoginModule, user_module_1.UserModule, register_module_1.RegisterModule],
+        imports: [mysql_module_1.DatabaseModule, register_module_1.RegisterModule],
         controllers: [app_controller_1.AppController],
         providers: [],
     })

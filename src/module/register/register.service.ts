@@ -1,26 +1,21 @@
-import { Injectable } from '@nestjs/common';
-import { CreateRegisterDto } from './dto/create-register.dto';
-import { UpdateRegisterDto } from './dto/update-register.dto';
-
+import { Inject, Injectable } from '@nestjs/common';
+import { RegisterDto } from './register.dto';
+import { Repository } from 'typeorm';
+import { Register } from './register.model';
 @Injectable()
 export class RegisterService {
-  create(createRegisterDto: CreateRegisterDto) {
-    return 'This action adds a new register';
+  constructor(
+    @Inject('Register') private readonly registerRepository:Repository<Register>
+  ){}
+
+  async create(registerDto:RegisterDto) {
+    const user =  await this.registerRepository.save(registerDto);
+    return user;
   }
 
-  findAll() {
-    return `This action returns all register`;
+
+  findAll(){
+    return this.registerRepository.find()
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} register`;
-  }
-
-  update(id: number, updateRegisterDto: UpdateRegisterDto) {
-    return `This action updates a #${id} register`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} register`;
-  }
 }

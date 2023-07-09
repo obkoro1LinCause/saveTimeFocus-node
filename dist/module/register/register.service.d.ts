@@ -1,9 +1,9 @@
-import { CreateRegisterDto } from './dto/create-register.dto';
-import { UpdateRegisterDto } from './dto/update-register.dto';
+import { RegisterDto } from './register.dto';
+import { Repository } from 'typeorm';
+import { Register } from './register.model';
 export declare class RegisterService {
-    create(createRegisterDto: CreateRegisterDto): string;
-    findAll(): string;
-    findOne(id: number): string;
-    update(id: number, updateRegisterDto: UpdateRegisterDto): string;
-    remove(id: number): string;
+    private readonly registerRepository;
+    constructor(registerRepository: Repository<Register>);
+    create(registerDto: RegisterDto): Promise<RegisterDto & Register>;
+    findAll(): Promise<Register[]>;
 }

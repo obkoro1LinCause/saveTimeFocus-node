@@ -15,63 +15,34 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.RegisterController = void 0;
 const common_1 = require("@nestjs/common");
 const register_service_1 = require("./register.service");
-const create_register_dto_1 = require("./dto/create-register.dto");
-const update_register_dto_1 = require("./dto/update-register.dto");
+const register_dto_1 = require("./register.dto");
+const responser_decorator_1 = require("../../decorators/responser.decorator");
 let RegisterController = exports.RegisterController = class RegisterController {
     constructor(registerService) {
         this.registerService = registerService;
     }
-    create(createRegisterDto) {
-        return this.registerService.create(createRegisterDto);
+    create(registerDto) {
+        return this.registerService.create(registerDto);
     }
-    findAll() {
+    find() {
         return this.registerService.findAll();
-    }
-    findOne(id) {
-        return this.registerService.findOne(+id);
-    }
-    update(id, updateRegisterDto) {
-        return this.registerService.update(+id, updateRegisterDto);
-    }
-    remove(id) {
-        return this.registerService.remove(+id);
     }
 };
 __decorate([
     (0, common_1.Post)(),
+    responser_decorator_1.Responser.handle('user post register'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_register_dto_1.CreateRegisterDto]),
+    __metadata("design:paramtypes", [register_dto_1.RegisterDto]),
     __metadata("design:returntype", void 0)
 ], RegisterController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
+    responser_decorator_1.Responser.handle('get users'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
-], RegisterController.prototype, "findAll", null);
-__decorate([
-    (0, common_1.Get)(':id'),
-    __param(0, (0, common_1.Param)('id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
-], RegisterController.prototype, "findOne", null);
-__decorate([
-    (0, common_1.Patch)(':id'),
-    __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_register_dto_1.UpdateRegisterDto]),
-    __metadata("design:returntype", void 0)
-], RegisterController.prototype, "update", null);
-__decorate([
-    (0, common_1.Delete)(':id'),
-    __param(0, (0, common_1.Param)('id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
-], RegisterController.prototype, "remove", null);
+], RegisterController.prototype, "find", null);
 exports.RegisterController = RegisterController = __decorate([
     (0, common_1.Controller)('register'),
     __metadata("design:paramtypes", [register_service_1.RegisterService])

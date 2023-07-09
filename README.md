@@ -6,9 +6,10 @@ nest g resource [xxx]
         - nest g controller [xxx] 生成某个模块的控制器
     - x.module.ts
         - 模块:controllers 和 providers  一一对应关系
-        - imports
-        - exports
-        - providers
+        - imports 导入
+        - exports 导出
+        - providers 依赖注入
+          - https://juejin.cn/post/7176298965401337917#heading-0
     - x.service.ts
         -  创建服务类 === 和数据库打交道
         -  nest g service [xxx] 生成某个模块的服务类

@@ -1,6 +1,5 @@
-export declare const APP: {
-    PORT: number;
-};
+import { APP_CONFIG } from '@app/interfaces/global.interface';
+export declare const APP: APP_CONFIG;
 export declare const PROJECT: {
     name: any;
     version: any;
