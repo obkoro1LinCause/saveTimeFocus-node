@@ -29,16 +29,16 @@ let RegisterController = exports.RegisterController = class RegisterController {
     }
 };
 __decorate([
-    (0, common_1.Post)(),
-    responser_decorator_1.Responser.handle('user post register'),
+    (0, common_1.Post)('/create_user'),
+    responser_decorator_1.Responser.handle('post register create_user'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [register_dto_1.RegisterDto]),
+    __metadata("design:paramtypes", [register_dto_1.RegisterCreateDto]),
     __metadata("design:returntype", void 0)
 ], RegisterController.prototype, "create", null);
 __decorate([
-    (0, common_1.Get)(),
-    responser_decorator_1.Responser.handle('get users'),
+    (0, common_1.Get)('/users'),
+    responser_decorator_1.Responser.handle('get register users'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)

@@ -17,7 +17,7 @@ export const databaseProviders = [
           username: 'root',
           password: isDevEnv  ? 'HHl070300001111':'root',
           database: 'focus_sys',
-          entities: [__dirname + '/../../module/**/*.model{.ts,.js}'],
+          entities: [__dirname + '/../../model/*.model{.ts,.js}'],
           synchronize: true,
           logging: isDevEnv ,
           maxQueryExecutionTime: 1000,
@@ -25,8 +25,10 @@ export const databaseProviders = [
 
         dataSource.initialize().then(async ()=>{
           isDevEnv && log.info('db inited')
-        }).catch(()=>{})
+        }).catch(()=>{
           isDevEnv && log.error('db init error')
+        })
+          
         return dataSource;
       },
     },

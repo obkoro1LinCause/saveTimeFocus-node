@@ -14,13 +14,20 @@ import logger from '@app/utils/logger'
 import * as APP_CONFIG from '@app/app.config'
 import { environment, isProdEnv } from '@app/app.environment'
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, isProdEnv ? { logger: false } : {})
   app.use(helmet())
   app.use(compression())
   app.use(bodyParser.json({ limit: '1mb' }))
-  app.use(bodyParser.urlencoded({ extended: true }))
+  app.use(bodyParser.urlencoded({ extended: false }))
+
+  //开启一个全局验证管道
+  app.useGlobalPipes(new ValidationPipe({
+    enableDebugMessages:true,
+    transform:true
+  })) 
   // 全局未处理的异常捕获
   app.useGlobalFilters(new HttpExceptionFilter())
   // 全局拦截器

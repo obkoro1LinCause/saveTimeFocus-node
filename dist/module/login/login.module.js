@@ -10,12 +10,14 @@ exports.LoginModule = void 0;
 const common_1 = require("@nestjs/common");
 const login_service_1 = require("./login.service");
 const login_controller_1 = require("./login.controller");
+const cache_module_1 = require("../../processors/cache/cache.module");
 let LoginModule = exports.LoginModule = class LoginModule {
 };
 exports.LoginModule = LoginModule = __decorate([
     (0, common_1.Module)({
         controllers: [login_controller_1.LoginController],
-        providers: [login_service_1.LoginService]
+        providers: [login_service_1.LoginService],
+        imports: [cache_module_1.CacheModule]
     })
 ], LoginModule);
 //# sourceMappingURL=login.module.js.map

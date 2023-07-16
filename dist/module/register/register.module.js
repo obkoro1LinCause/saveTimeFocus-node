@@ -8,16 +8,18 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RegisterModule = void 0;
 const common_1 = require("@nestjs/common");
-const register_service_1 = require("./register.service");
 const register_controller_1 = require("./register.controller");
-const register_model_1 = require("./register.model");
+const register_service_1 = require("./register.service");
+const cache_module_1 = require("../../processors/cache/cache.module");
+const module_1 = require("..");
 let RegisterModule = exports.RegisterModule = class RegisterModule {
 };
 exports.RegisterModule = RegisterModule = __decorate([
     (0, common_1.Module)({
         controllers: [register_controller_1.RegisterController],
-        providers: [register_model_1.RegisterProvider, register_service_1.RegisterService],
+        providers: [module_1.UserProvider, module_1.UserAuthsProvider, register_service_1.RegisterService],
         exports: [register_service_1.RegisterService],
+        imports: [cache_module_1.CacheModule]
     })
 ], RegisterModule);
 //# sourceMappingURL=register.module.js.map

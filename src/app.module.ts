@@ -2,7 +2,8 @@ import { Module,NestModule,MiddlewareConsumer } from '@nestjs/common'
 import { AppController } from './app.controller'
 
 // universal modules
-import { DatabaseModule } from '@app/processors/database/mysql.module'
+import { DatabaseModule } from '@app/processors/database/mysql.module';
+import { CacheModule } from '@app/processors/cache/cache.module'
 
 // middleware
 import { CorsMiddleware } from '@app/middlewares/cors.middleware'

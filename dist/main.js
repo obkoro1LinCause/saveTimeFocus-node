@@ -41,12 +41,17 @@ const logger_1 = __importDefault(require("./utils/logger"));
 const APP_CONFIG = __importStar(require("./app.config"));
 const app_environment_1 = require("./app.environment");
 const swagger_1 = require("@nestjs/swagger");
+const common_1 = require("@nestjs/common");
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule, app_environment_1.isProdEnv ? { logger: false } : {});
     app.use((0, helmet_1.default)());
     app.use((0, compression_1.default)());
     app.use(body_parser_1.default.json({ limit: '1mb' }));
-    app.use(body_parser_1.default.urlencoded({ extended: true }));
+    app.use(body_parser_1.default.urlencoded({ extended: false }));
+    app.useGlobalPipes(new common_1.ValidationPipe({
+        enableDebugMessages: true,
+        transform: true
+    }));
     app.useGlobalFilters(new error_filter_1.HttpExceptionFilter());
     app.useGlobalInterceptors(new transform_interceptor_1.TransformInterceptor(), new error_interceptor_1.ErrorInterceptor(), new logging_interceptor_1.LoggingInterceptor());
     const options = new swagger_1.DocumentBuilder()
