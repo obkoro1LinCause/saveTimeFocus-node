@@ -14,3 +14,9 @@ export declare const JWT_CONFIG: {
     secret: string;
     expiresIn: string;
 };
+export declare const REDIS_OPTIONS: {
+    host: string;
+    port: string;
+    username: string;
+    password: string;
+};

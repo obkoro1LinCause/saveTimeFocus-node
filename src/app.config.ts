@@ -29,3 +29,10 @@ export const JWT_CONFIG = {
     secret: 'secretKey', // 加密密钥
     expiresIn: '24h', // 24小时内过期
 };
+
+export const REDIS_OPTIONS = {
+    host: isDevEnv ?  "localhost":'',
+    port:isDevEnv ? "6379":'',
+    username:'',
+    password:''
+}

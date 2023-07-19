@@ -19,11 +19,10 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(email: string, password: string) {
-    // TODO:改造将调用查数据库的提取到authService
-    const user = await this.AuthService.getUser(email,password);
 
+    const user = await this.AuthService.getUser(email,password);
     if (!user) {
-        throw  new ValidationError('用户名不正确!')
+        throw new ValidationError('用户名不正确!')
     }
     if (!compareSync(password, user.password)) {
         throw new ValidationError('密码错误！!')

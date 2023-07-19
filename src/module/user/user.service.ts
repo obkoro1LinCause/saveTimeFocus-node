@@ -29,7 +29,7 @@ export class UserService {
 
     async loginUser(user:UserCreateDto){
         const token = this.AuthService.createToken(user);
-        await this.CacheService.set(`${user.email}&${user.password}`,token,{ttl:60 * 60 *24});
+        await this.CacheService.set(`${user.email}&${user.password}`,token,{ ttl:60 * 60 * 24});
         // TODO:插入ext表
         return {
             ...user,

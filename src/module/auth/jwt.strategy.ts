@@ -2,7 +2,7 @@ import { ExtractJwt, Strategy,StrategyOptions } from 'passport-jwt';
 import { PassportStrategy} from '@nestjs/passport';
 import { Injectable,Inject } from '@nestjs/common';
 import { CacheService } from '@app/processors/cache/cache.service';
-import { ValidationError } from '@app/errors/validation.error';
+import { HttpUnauthorizedError } from '@app/errors/unauthorized.error';
 import { AuthService } from '@app/module/auth/auth.service';
 import { JWT_CONFIG } from '@app/app.config';
 
@@ -32,14 +32,14 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       const cacheToken = await this.CacheService.get(`${user.email}&${user.password}`);
 
       if (!cacheToken) {
-        throw  new ValidationError('token已过期!')
+        throw  new HttpUnauthorizedError('token已过期!')
       }
       if (token != cacheToken) {
-        throw new ValidationError('token不正确!');
+        throw new HttpUnauthorizedError('token不正确!');
       }
       const existUser = await this.AuthService.getUser(user.email,user.password);
       if (!existUser) {
-        throw  new ValidationError('token不存在!')
+        throw  new HttpUnauthorizedError('token不存在!')
       }
       return existUser;
     }

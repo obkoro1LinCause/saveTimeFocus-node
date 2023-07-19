@@ -1,6 +1,7 @@
 import { Injectable, Inject, OnModuleInit } from "@nestjs/common";
 import logger from "@app/utils/logger";
 import * as Redis from "redis";
+import { REDIS_OPTIONS } from '@app/app.config'
 
 const redisLog = logger.scope("redis");
 @Injectable()
@@ -50,13 +51,13 @@ export class CacheService {
   createCacheOptions() {
     const redisOptions: any = {
       socket: {
-        host: "localhost",
-        port: "6379",
+        host: REDIS_OPTIONS.host,
+        port: REDIS_OPTIONS.port,
         reconnectStrategy: this.retryStrategy.bind(this),
       },
     };
-    redisOptions.username = "";
-    redisOptions.password = "";
+    redisOptions.username = REDIS_OPTIONS.username;
+    redisOptions.password = REDIS_OPTIONS.password;
     return redisOptions;
   }
 
