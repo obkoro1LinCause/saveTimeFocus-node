@@ -55,6 +55,7 @@ async function bootstrap() {
     app.useGlobalFilters(new error_filter_1.HttpExceptionFilter());
     app.useGlobalInterceptors(new transform_interceptor_1.TransformInterceptor(), new error_interceptor_1.ErrorInterceptor(), new logging_interceptor_1.LoggingInterceptor());
     const options = new swagger_1.DocumentBuilder()
+        .addBearerAuth()
         .setTitle('save-time-focus-serve')
         .setDescription('接口文档')
         .setVersion('1.0')

@@ -1,8 +1,8 @@
-import { Entity, Column,BaseEntity,PrimaryGeneratedColumn,CreateDateColumn } from 'typeorm';
+import { Entity, Column,BaseEntity,PrimaryGeneratedColumn,CreateDateColumn,BeforeInsert } from 'typeorm';
 import { getProviderByModelClass } from '@app/transformers/model.transformer';
 import { IsString, IsNotEmpty, IsEmail} from 'class-validator';
 import { DB_USERS_TOKEN } from '@app/constants/sys.constant'
-
+import { randHandle,md5Handle } from '@app/utils';
 
 @Entity()
 export class User{
@@ -50,6 +50,16 @@ export class User{
     comment: '注册时间'
   })
   register_at:Date
+
+  @BeforeInsert() 
+  md5Pwd() { 
+    this.password = md5Handle(this.password);
+  } 
+
+  @BeforeInsert()
+  randSelfCode(){
+    this.self_invite_code = randHandle();
+  }
 };
 
 

@@ -10,3 +10,7 @@ export declare const CROSS_DOMAIN: {
     allowedOrigins: string[];
     allowedReferer: string;
 };
+export declare const JWT_CONFIG: {
+    secret: string;
+    expiresIn: string;
+};

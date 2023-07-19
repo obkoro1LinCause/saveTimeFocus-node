@@ -1,8 +1,8 @@
-import md5 from 'blueimp-md5';
+import { hashSync } from 'bcryptjs';
 
 // 加密
-export function md5Handle(data){
-    return md5(data);
+export function md5Handle(password,num =10){
+    return hashSync(password,num);
 }
 
 // 随机生成四位数

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CROSS_DOMAIN = exports.PROJECT = exports.APP = void 0;
+exports.JWT_CONFIG = exports.CROSS_DOMAIN = exports.PROJECT = exports.APP = void 0;
 const path_1 = require("path");
 const ROOT_PATH = (0, path_1.join)(__dirname, '..');
 const packageJSON = require((0, path_1.resolve)(ROOT_PATH, 'package.json'));
@@ -17,5 +17,9 @@ exports.PROJECT = {
 exports.CROSS_DOMAIN = {
     allowedOrigins: ['', '', ''],
     allowedReferer: '',
+};
+exports.JWT_CONFIG = {
+    secret: 'secretKey',
+    expiresIn: '24h',
 };
 //# sourceMappingURL=app.config.js.map

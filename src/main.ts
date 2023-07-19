@@ -34,6 +34,7 @@ async function bootstrap() {
   app.useGlobalInterceptors(new TransformInterceptor(),new ErrorInterceptor(),new LoggingInterceptor());
 
   const options = new DocumentBuilder()
+    .addBearerAuth()
     .setTitle('save-time-focus-serve')
     .setDescription('接口文档')
     .setVersion('1.0')

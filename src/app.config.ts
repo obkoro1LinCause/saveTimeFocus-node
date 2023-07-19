@@ -24,3 +24,8 @@ export const CROSS_DOMAIN = {
     allowedReferer: '',
 }
 
+
+export const JWT_CONFIG = {
+    secret: 'secretKey', // 加密密钥
+    expiresIn: '24h', // 24小时内过期
+};
