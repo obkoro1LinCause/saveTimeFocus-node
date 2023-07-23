@@ -14,7 +14,6 @@ const value_constant_1 = require("../constants/value.constant");
 const app_environment_1 = require("../app.environment");
 let HttpExceptionFilter = exports.HttpExceptionFilter = class HttpExceptionFilter {
     catch(exception, host) {
-        var _a;
         const request = host.switchToHttp().getRequest();
         const response = host.switchToHttp().getResponse();
         const exceptionStatus = exception.getStatus() || common_1.HttpStatus.INTERNAL_SERVER_ERROR;
@@ -24,7 +23,7 @@ let HttpExceptionFilter = exports.HttpExceptionFilter = class HttpExceptionFilte
         const data = {
             status: response_interface_1.ResponseStatus.Error,
             message: errorMessage,
-            error: ((_a = errorInfo === null || errorInfo === void 0 ? void 0 : errorInfo.response) === null || _a === void 0 ? void 0 : _a.message) || ((0, lodash_1.isString)(errorInfo) ? errorInfo : JSON.stringify(errorInfo)),
+            error: (0, lodash_1.isString)(errorInfo) ? errorInfo : JSON.stringify(errorInfo),
             debug: app_environment_1.isDevEnv ? (errorInfo === null || errorInfo === void 0 ? void 0 : errorInfo.stack) || exception.stack : value_constant_1.UNDEFINED,
         };
         if (exceptionStatus === common_1.HttpStatus.NOT_FOUND) {

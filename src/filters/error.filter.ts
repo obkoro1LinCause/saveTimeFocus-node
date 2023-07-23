@@ -21,13 +21,15 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const response = host.switchToHttp().getResponse()
     const exceptionStatus = exception.getStatus() || HttpStatus.INTERNAL_SERVER_ERROR
     const errorResponse: any = exception.getResponse() as ExceptionInfo
+
     const errorMessage = isString(errorResponse) ? errorResponse : errorResponse.message
     const errorInfo = isString(errorResponse) ? null : errorResponse.error
+
 
     const data: HttpResponseError = {
       status: ResponseStatus.Error,
       message: errorMessage,
-      error: errorInfo?.response?.message || (isString(errorInfo) ? errorInfo : JSON.stringify(errorInfo)),
+      error: isString(errorInfo) ? errorInfo : JSON.stringify(errorInfo),
       debug: isDevEnv ? errorInfo?.stack || exception.stack : UNDEFINED,
     }
 

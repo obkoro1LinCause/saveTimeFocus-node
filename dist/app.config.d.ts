@@ -13,6 +13,8 @@ export declare const CROSS_DOMAIN: {
 export declare const JWT_CONFIG: {
     secret: string;
     expiresIn: string;
+    ignoreExpiration: boolean;
+    passReqToCallback: boolean;
 };
 export declare const REDIS_OPTIONS: {
     host: string;

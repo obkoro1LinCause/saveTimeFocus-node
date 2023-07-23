@@ -17,8 +17,9 @@ const common_1 = require("@nestjs/common");
 const user_dto_1 = require("./user.dto");
 const responser_decorator_1 = require("../../decorators/responser.decorator");
 const user_service_1 = require("./user.service");
-const passport_1 = require("@nestjs/passport");
 const swagger_1 = require("@nestjs/swagger");
+const jwt_auth_guard_1 = require("../../guards/jwt.auth.guard");
+const local_auth_guard_1 = require("../../guards/local.auth.guard");
 let UserController = exports.UserController = class UserController {
     constructor(userService) {
         this.userService = userService;
@@ -43,7 +44,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], UserController.prototype, "create", null);
 __decorate([
-    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('local')),
+    (0, common_1.UseGuards)(local_auth_guard_1.LocalAuthGuard),
     (0, common_1.Post)('/login_user'),
     responser_decorator_1.Responser.handle('post login_user'),
     __param(0, (0, common_1.Body)()),
@@ -53,7 +54,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], UserController.prototype, "login", null);
 __decorate([
-    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, swagger_1.ApiBearerAuth)(),
     (0, common_1.Get)('/find_users'),
     responser_decorator_1.Responser.handle('get find_users'),

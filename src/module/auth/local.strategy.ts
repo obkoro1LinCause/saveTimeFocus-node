@@ -25,9 +25,8 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
         throw new ValidationError('用户名不正确!')
     }
     if (!compareSync(password, user.password)) {
-        throw new ValidationError('密码错误！!')
+        throw new ValidationError('密码错误 !')
     }
-  
     return user;
   }
 }

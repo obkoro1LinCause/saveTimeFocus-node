@@ -21,7 +21,9 @@ exports.CROSS_DOMAIN = {
 };
 exports.JWT_CONFIG = {
     secret: 'secretKey',
-    expiresIn: '24h',
+    expiresIn: '',
+    ignoreExpiration: true,
+    passReqToCallback: true
 };
 exports.REDIS_OPTIONS = {
     host: app_environment_1.isDevEnv ? "localhost" : '',

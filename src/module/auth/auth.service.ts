@@ -7,7 +7,7 @@ import { User } from '@app/module';
 @Injectable()
 export class AuthService {
     constructor(
-        private jwtService: JwtService,
+        private readonly jwtService: JwtService,
         @Inject(DB_USERS_TOKEN) private readonly UserRepository:Repository<User>,
       ) {}
 

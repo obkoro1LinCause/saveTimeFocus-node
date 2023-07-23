@@ -9,14 +9,14 @@ import { JWT_CONFIG } from '@app/app.config';
 
 @Global()
 @Module({
-  providers: [UserProvider,LocalStrategy,AuthService,JwtStrategy],
   imports:[
     PassportModule,
     JwtModule.register({
       secret: JWT_CONFIG.secret,
-      signOptions: { expiresIn: JWT_CONFIG.expiresIn },
+      // signOptions: { expiresIn: JWT_CONFIG.expiresIn },
     })
   ],
+  providers: [AuthService,UserProvider,LocalStrategy,JwtStrategy],
   exports:[AuthService]
 })
 export class AuthModule {}

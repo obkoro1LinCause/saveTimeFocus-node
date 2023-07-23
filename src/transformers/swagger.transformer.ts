@@ -6,7 +6,6 @@ export function useApiProperty(_attrs):Function{
      return isDevEnv ? ApiProperty(_attrs) :()=>{}
 }
 
-
 export function useApiQuery(_attrs):Function{
     return isDevEnv ? ApiQuery(_attrs): ()=>{}
 }

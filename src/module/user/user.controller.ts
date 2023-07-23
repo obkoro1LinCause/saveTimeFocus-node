@@ -4,7 +4,9 @@ import { UserCreateDto } from './user.dto';
 import { Responser } from '@app/decorators/responser.decorator';
 import { UserService } from './user.service';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBearerAuth } from '@nestjs/swagger'
+import { ApiBearerAuth } from '@nestjs/swagger';
+import { JwtAuthGuard } from '@app/guards/jwt.auth.guard';
+import { LocalAuthGuard } from '@app/guards/local.auth.guard';
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {};
@@ -15,14 +17,14 @@ export class UserController {
     return this.userService.createUser(registerDto);
   }
 
-  @UseGuards(AuthGuard('local'))
+  @UseGuards(LocalAuthGuard)
   @Post('/login_user')
   @Responser.handle('post login_user')
   login(@Body()loginDto: UserCreateDto,@Req() req) {
     return this.userService.loginUser(loginDto);
   }
 
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Get('/find_users')
   @Responser.handle('get find_users')

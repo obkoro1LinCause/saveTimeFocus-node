@@ -10,10 +10,11 @@ import { CorsMiddleware } from '@app/middlewares/cors.middleware'
 import { OriginMiddleware } from '@app/middlewares/origin.middleware'
 
 // biz modules
-import { UserModule } from './module/user/user.module';
 import { AuthModule } from './module/auth/auth.module';
+import { UserModule } from './module/user/user.module';
+
 @Module({
-  imports: [DatabaseModule,UserModule,AuthModule,CacheModule],
+  imports: [DatabaseModule,CacheModule,AuthModule,UserModule],
   controllers: [AppController],
   providers: [],
 })
