@@ -22,12 +22,16 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Responser = exports.handle = exports.getResponserOptions = void 0;
 const reflector_constant_1 = require("../constants/reflector.constant");
 const common_1 = require("@nestjs/common");
 const TEXT = __importStar(require("../constants/text.constant"));
 const value_constant_1 = require("../constants/value.constant");
+const lodash_1 = __importDefault(require("lodash"));
 const getResponserOptions = (target) => {
     return {
         errorCode: reflector_constant_1.reflector.get('errorCode', target),
@@ -42,18 +46,28 @@ const createDecorator = (params) => {
     const { errorCode, successCode, errorMsg, successMsg } = params;
     return (_, __, decorator) => {
         (0, common_1.SetMetadata)('transform', true)(decorator.value);
-        (0, common_1.SetMetadata)('errorCode', errorCode)(decorator.value);
-        (0, common_1.SetMetadata)('successCode', successCode)(decorator.value);
-        (0, common_1.SetMetadata)('errorMsg', errorMsg)(decorator.value);
-        (0, common_1.SetMetadata)('successMsg', successMsg)(decorator.value);
+        if (errorCode) {
+            (0, common_1.SetMetadata)('errorCode', errorCode)(decorator.value);
+        }
+        if (successCode) {
+            (0, common_1.SetMetadata)('successCode', successCode)(decorator.value);
+        }
+        if (errorMsg) {
+            (0, common_1.SetMetadata)('errorMsg', errorMsg)(decorator.value);
+        }
+        if (successMsg) {
+            (0, common_1.SetMetadata)('successMsg', successMsg)(decorator.value);
+        }
         return decorator;
     };
 };
-const handle = (apiMsg) => {
-    const errorCode = value_constant_1.UNDEFINED;
-    const successCode = value_constant_1.UNDEFINED;
-    const errorMsg = apiMsg + TEXT.HTTP_ERROR_SUFFIX;
-    const successMsg = apiMsg + TEXT.HTTP_SUCCESS_SUFFIX;
+const handle = (...args) => {
+    const option = args[0];
+    const isOption = (value) => lodash_1.default.isObject(value);
+    const errorCode = isOption(option) ? option.error : value_constant_1.UNDEFINED;
+    const successCode = isOption(option) ? option.success : value_constant_1.UNDEFINED;
+    const errorMsg = isOption(option) ? option.message + TEXT.HTTP_ERROR_SUFFIX : option + TEXT.HTTP_ERROR_SUFFIX;
+    const successMsg = isOption(option) ? option.message + TEXT.HTTP_SUCCESS_SUFFIX : option + TEXT.HTTP_SUCCESS_SUFFIX;
     return createDecorator({
         errorCode,
         successCode,

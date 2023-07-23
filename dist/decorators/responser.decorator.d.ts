@@ -5,7 +5,7 @@ export declare const getResponserOptions: (target: any) => {
     successMsg: any;
     transform: any;
 };
-export declare const handle: (apiMsg: any) => (_: any, __: any, decorator: PropertyDescriptor) => PropertyDescriptor;
+export declare const handle: (...args: any[]) => (_: any, __: any, decorator: PropertyDescriptor) => PropertyDescriptor;
 export declare const Responser: {
-    handle: (apiMsg: any) => (_: any, __: any, decorator: PropertyDescriptor) => PropertyDescriptor;
+    handle: (...args: any[]) => (_: any, __: any, decorator: PropertyDescriptor) => PropertyDescriptor;
 };

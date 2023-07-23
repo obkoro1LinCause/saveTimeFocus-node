@@ -24,7 +24,6 @@
 ### 应用结构
 
 **入口**
-
 - `main.ts`：引入配置，启动主程序，引入各种全局服务
 - `app.module.ts`：主程序根模块，负责各业务模块的聚合
 - `app.controller.ts`：主程序根控制器
@@ -40,45 +39,60 @@
 `pipe`: 管道（暂无）补充：参数格式化/校验器，参数字段权限/校验，参数挂载到`request`上下文
 `controller`:  业务控制器
 `service`：业务服务
-`interceptor:after`:数据流拦截器（格式化数据、错误）
+`interceptor:after`: 数据流拦截器、格式化数据
 `filter`:捕获以上所有流程中出现的异常，如果任何一个环节抛出异常，则返回错误
+
+### 模块
+
+**中间件** [`middlewares`](/src/middlewares)
+- [`CORS` 中间件](/src/middlewares/cors.middleware.ts)，用于处理跨域访问
+- [`Origin` 中间件](/src/middlewares/origin.middleware.ts)，用于拦截各路不明请求
+
+
+**守卫** [`guards`](/src/guards)
+- 默认所有请求会使用 [`JwtAuthGuard`](/src/guards/jwt.auth.guard.ts) 守卫鉴权(token是否过期、token是否有效、续签)
+- 登录请求都会使用 [`LocalAuthGuard`](/src/guards/local.auth.guard.ts) (生成token,用户名/密码)
 
 **本地守卫流程**
 1.`guard`：[守卫](/src/guards) 分析请求
 2.`guard.canActivate`：继承处理
 3.`LocalStrategy.validate`：调用 [鉴权服务](/src/modules/auth/local.strategy.ts)
-  - 用户名
-  - 密码
 4.`guard.handleRequest`：[根据鉴权服务返回的结果作判断处理，通行或拦截](/src/guards/local.auth.guard.ts)
 
 **鉴权处理流程**
 1.`guard`：[守卫](/src/guards) 分析请求
 2.`guard.canActivate`：继承处理(token不对直接拦截)
 3.`JwtStrategy.validate`：调用 [鉴权服务](/src/modules/auth/jwt.strategy.ts)
-  - token是否过期
-  - token是否有效
-  - 续签
 4.`guard.handleRequest`：[根据鉴权服务返回的结果作判断处理，通行或拦截](/src/guards/jwt.auth.guard.ts)
 
 **鉴权级别**
+1. 所以接口的CRUD都需要鉴权，都需要判断是否有token
 
-**参数检验逻辑**
-
-**错误过滤器**
-
-**拦截器**
-
-**装饰器扩展**
-
-**守卫**
-
-**中间件**
 
 **管道**
+**参数检验逻辑**
+
+
+
+
+**拦截器**
+- [数据流转换拦截器](/src/interceptors/transform.interceptor.ts)：当控制器所需的 Promise service 成功响应时，将在此被转换为标准的数据结构
+- [数据流异常拦截器](/src/interceptors/error.interceptor.ts)：当控制器所需的 Promise service 发生错误时，错误将在此被捕获
+- [日志拦截器](/src/interceptors/logging.interceptor.ts)：补充默认的全局日志
+
+**装饰器扩展** [`decorators`](/src/decorators)
+- [响应装饰器](/src/decorators/responser.decorator)：用于输出规范化的信息，如 `message` 和 翻页参数数据
+- [请求参数装饰器](/src/decorators/queryparams.decorator.ts)：用户自动校验和格式化请求参数，包括 `query/params/ip` 等辅助信息
+
+
+**错误过滤器** [`error.filter.ts`](/src/filters/error.filter.ts)
+
 
 **业务模块**
 
-**核心（全局）模块**
+- `AuthModule`全局鉴权、Token
+- `UserModule`
 
-- `AuthModule`
+
+**核心（全局）模块**
 - `CacheModule`
