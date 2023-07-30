@@ -19,3 +19,8 @@ export  interface DATABASE_CONFIG{
   logging: boolean,
 }
 
+
+export interface SOCKET_SYNC_MESSAGE{
+    token?:string,
+    data?:object
+}

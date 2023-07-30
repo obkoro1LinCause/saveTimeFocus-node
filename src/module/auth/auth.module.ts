@@ -7,7 +7,6 @@ import { AuthService } from './auth.service';
 import { JwtModule } from '@nestjs/jwt';
 import { JWT_CONFIG } from '@app/app.config';
 
-@Global()
 @Module({
   imports:[
     PassportModule,

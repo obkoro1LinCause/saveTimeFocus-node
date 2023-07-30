@@ -22,3 +22,16 @@ export declare const REDIS_OPTIONS: {
     username: string;
     password: string;
 };
+export declare const EMAIL: {
+    port: number;
+    host: string;
+    account: string;
+    password: string;
+    from: string;
+};
+export declare const VIPTIME: {
+    hour_ts: number;
+    day_ts: number;
+    month_ts: number;
+    year_ts: number;
+};

@@ -10,8 +10,8 @@ import { JWT_CONFIG } from '@app/app.config';
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
     constructor(
-      private readonly CacheService: CacheService,
-      private readonly AuthService: AuthService,
+      private readonly cacheService: CacheService,
+      private readonly authService: AuthService,
     ) {
         super({
           	// 如何提取令牌
@@ -26,26 +26,22 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
     // 该方法参数表示通过守卫后解析token得到的内容，返回值将传入控制器方法参数
     async validate(req:any,payload: any) {
-
+       // token 解密来的字段
       const user = { ...payload };
+      
       const token = ExtractJwt.fromAuthHeaderAsBearerToken()(req);
-      const cacheToken = await this.CacheService.get(`${user.email}&${user.password}`);
 
-      if (!cacheToken) {
-        throw  new HttpUnauthorizedError('token已过期!');
+      const existUser = await this.authService.getUser(user.email);
+      const cacheToken = await this.cacheService.get(`${user.email}&${user.password}`);
+
+      if (!existUser) {
+        throw  new HttpUnauthorizedError('用户不存在!');
       }
-      if (token !== cacheToken) {
+      if(cacheToken !== token){
         throw new HttpUnauthorizedError('token不正确!');
       }
+      this.cacheService.set(`${user.email}&${user.password}`,token,{ ttl:60 * 60 * 24});
 
-      const existUser = await this.AuthService.getUser(user.email,user.password);
-      if (!existUser) {
-        throw  new HttpUnauthorizedError('token不存在!');
-      }
-
-      // token续签 
-      this.CacheService.set(`${user.email}&${user.password}`,token,{ ttl:60 * 60 * 24});
-      
-      return existUser;
+      return user;
     }
 }

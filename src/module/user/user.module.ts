@@ -1,17 +1,14 @@
 import { Module } from '@nestjs/common';
 import { UserController } from './user.controller';
 import { UserService } from './user.service'
-// import { CacheModule } from '@app/processors/cache/cache.module';
-import { UserProvider, UserAuthsProvider} from '@app/module';
-// import { AuthService } from '../auth/auth.service';
-// import { JwtService } from '@nestjs/jwt';
-
+import { HelperModule } from '@app/processors/helper/helper.module';
 import { AuthModule } from '@app/module/auth/auth.module';
+import { UserProvider} from '@app/module';
+import { SocketModule } from '@app/module/socket/socket.module'
 @Module({
   controllers: [UserController],
-  providers: [UserService,UserProvider,UserAuthsProvider,AuthModule],
+  providers: [UserService,UserProvider],
   exports:[UserService],
-  imports:[]
-  
+  imports:[AuthModule,SocketModule]
 })
 export class UserModule {}

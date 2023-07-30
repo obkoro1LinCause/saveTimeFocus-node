@@ -25,8 +25,8 @@ export const databaseProviders = [
 
         dataSource.initialize().then(async ()=>{
           isDevEnv && log.info('db inited')
-        }).catch(()=>{
-          isDevEnv && log.error('db init error')
+        }).catch((error)=>{
+          isDevEnv && log.error('db init error',error)
         })
           
         return dataSource;

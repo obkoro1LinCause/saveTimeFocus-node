@@ -8,7 +8,7 @@ import { User } from '@app/module';
 export class AuthService {
     constructor(
         private readonly jwtService: JwtService,
-        @Inject(DB_USERS_TOKEN) private readonly UserRepository:Repository<User>,
+        @Inject(DB_USERS_TOKEN) private readonly userRepository:Repository<User>,
       ) {}
 
     createToken(user) {
@@ -16,8 +16,8 @@ export class AuthService {
         return this.jwtService.sign(payload);
     }
     
-    async getUser(email: string, password: string){
-        return await this.UserRepository
+    async getUser(email: string){
+        return await this.userRepository
         .createQueryBuilder('user')
         .addSelect('user.password')
         .where('user.email=:email', { email })

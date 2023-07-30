@@ -11,10 +11,12 @@ const common_1 = require("@nestjs/common");
 const app_controller_1 = require("./app.controller");
 const mysql_module_1 = require("./processors/database/mysql.module");
 const cache_module_1 = require("./processors/cache/cache.module");
+const helper_module_1 = require("./processors/helper/helper.module");
 const cors_middleware_1 = require("./middlewares/cors.middleware");
 const origin_middleware_1 = require("./middlewares/origin.middleware");
 const auth_module_1 = require("./module/auth/auth.module");
 const user_module_1 = require("./module/user/user.module");
+const socket_module_1 = require("./module/socket/socket.module");
 let AppModule = exports.AppModule = class AppModule {
     configure(consumer) {
         consumer.apply(cors_middleware_1.CorsMiddleware, origin_middleware_1.OriginMiddleware).forRoutes('*');
@@ -22,7 +24,7 @@ let AppModule = exports.AppModule = class AppModule {
 };
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
-        imports: [mysql_module_1.DatabaseModule, cache_module_1.CacheModule, auth_module_1.AuthModule, user_module_1.UserModule],
+        imports: [mysql_module_1.DatabaseModule, cache_module_1.CacheModule, helper_module_1.HelperModule, auth_module_1.AuthModule, user_module_1.UserModule, socket_module_1.SocketModule],
         controllers: [app_controller_1.AppController],
         providers: [],
     })

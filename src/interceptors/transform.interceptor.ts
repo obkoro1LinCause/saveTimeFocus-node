@@ -21,19 +21,17 @@ export class TransformInterceptor<T> implements NestInterceptor<T, T | HttpRespo
       return call$
     }
 
-    const request = context.switchToHttp().getRequest<Request>()
+    const request = context.switchToHttp().getRequest<Request>();
+
     return call$.pipe(
       map((data: any) => {
         return {
           status: ResponseStatus.Success,
           message: successMsg || TEXT.HTTP_DEFAULT_SUCCESS_TEXT,
           params: {
-            // isAuthenticated: request.isAuthenticated(),
-            // isUnauthenticated: request.isUnauthenticated(),
             url: request.url,
             method: request.method,
             routes: request.params,
-            // payload: request.$validatedPayload || {},
           },
           result:data,
         }

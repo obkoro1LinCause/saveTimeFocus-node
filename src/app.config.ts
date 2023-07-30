@@ -32,9 +32,27 @@ export const JWT_CONFIG = {
     passReqToCallback:true
 };
 
+// redis配置
 export const REDIS_OPTIONS = {
     host: isDevEnv ?  "localhost":'',
     port:isDevEnv ? "6379":'',
     username:'',
     password:''
+}
+
+// 邮箱配置
+export const EMAIL = {
+    port: 465,
+    host: 'smtp.qq.com',
+    account: 'savetimefocus@foxmail.com',
+    password: 'oezichkwnqtjdbdc',
+    from: 'koro<savetimefocus@foxmail.com>'
+}
+
+// vip 默认配置
+export const VIPTIME = {
+    hour_ts:3600000,
+    day_ts:86400000,
+    month_ts:2592000000,
+    year_ts:31104000000
 }

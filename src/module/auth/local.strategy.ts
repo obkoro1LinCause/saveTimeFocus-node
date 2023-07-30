@@ -9,7 +9,7 @@ import { AuthService } from '@app/module/auth/auth.service';
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
   constructor(
-    private readonly AuthService: AuthService,
+    private readonly authService: AuthService,
    ) {
    
     super({
@@ -19,14 +19,14 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(email: string, password: string) {
-
-    const user = await this.AuthService.getUser(email,password);
+    const user = await this.authService.getUser(email);
     if (!user) {
         throw new ValidationError('用户名不正确!')
     }
     if (!compareSync(password, user.password)) {
         throw new ValidationError('密码错误 !')
     }
+    console.log(email,password,user,'-1---1-')
     return user;
   }
 }

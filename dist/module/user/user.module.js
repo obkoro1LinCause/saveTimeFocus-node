@@ -10,16 +10,17 @@ exports.UserModule = void 0;
 const common_1 = require("@nestjs/common");
 const user_controller_1 = require("./user.controller");
 const user_service_1 = require("./user.service");
-const module_1 = require("..");
 const auth_module_1 = require("../auth/auth.module");
+const module_1 = require("..");
+const socket_module_1 = require("../socket/socket.module");
 let UserModule = exports.UserModule = class UserModule {
 };
 exports.UserModule = UserModule = __decorate([
     (0, common_1.Module)({
         controllers: [user_controller_1.UserController],
-        providers: [user_service_1.UserService, module_1.UserProvider, module_1.UserAuthsProvider, auth_module_1.AuthModule],
+        providers: [user_service_1.UserService, module_1.UserProvider],
         exports: [user_service_1.UserService],
-        imports: []
+        imports: [auth_module_1.AuthModule, socket_module_1.SocketModule]
     })
 ], UserModule);
 //# sourceMappingURL=user.module.js.map

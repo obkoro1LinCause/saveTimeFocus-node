@@ -20,39 +20,65 @@ const user_service_1 = require("./user.service");
 const swagger_1 = require("@nestjs/swagger");
 const jwt_auth_guard_1 = require("../../guards/jwt.auth.guard");
 const local_auth_guard_1 = require("../../guards/local.auth.guard");
+const reqParams_decorator_1 = require("../../decorators/reqParams.decorator");
 let UserController = exports.UserController = class UserController {
     constructor(userService) {
         this.userService = userService;
     }
     ;
-    create(registerDto) {
+    register(registerDto) {
         return this.userService.createUser(registerDto);
     }
     login(loginDto, req) {
         return this.userService.loginUser(loginDto);
+    }
+    change(userDto, user) {
+        return this.userService.changePassword(userDto, user);
+    }
+    sendEmailCode(email) {
+        this.userService.sendEmailCode(email);
     }
     find() {
         return this.userService.findAllUsers();
     }
 };
 __decorate([
-    (0, common_1.Post)('/create_user'),
-    responser_decorator_1.Responser.handle('post  create_user'),
+    (0, common_1.Post)('/register'),
+    responser_decorator_1.Responser.handle('post  register_user'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [user_dto_1.UserCreateDto]),
+    __metadata("design:paramtypes", [user_dto_1.RegisterDto]),
     __metadata("design:returntype", void 0)
-], UserController.prototype, "create", null);
+], UserController.prototype, "register", null);
 __decorate([
     (0, common_1.UseGuards)(local_auth_guard_1.LocalAuthGuard),
-    (0, common_1.Post)('/login_user'),
-    responser_decorator_1.Responser.handle('post login_user'),
+    (0, common_1.Post)('/login'),
+    responser_decorator_1.Responser.handle('post login'),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [user_dto_1.UserCreateDto, Object]),
+    __metadata("design:paramtypes", [user_dto_1.BaseDto, Object]),
     __metadata("design:returntype", void 0)
 ], UserController.prototype, "login", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.Post)('/change_password'),
+    responser_decorator_1.Responser.handle('post  change_password_user'),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, reqParams_decorator_1.ReqParams)('user')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [user_dto_1.BaseDto, Object]),
+    __metadata("design:returntype", void 0)
+], UserController.prototype, "change", null);
+__decorate([
+    (0, common_1.Get)('/send_email_code'),
+    responser_decorator_1.Responser.handle('get send_email_code'),
+    __param(0, (0, common_1.Query)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [user_dto_1.EmailDto]),
+    __metadata("design:returntype", void 0)
+], UserController.prototype, "sendEmailCode", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, swagger_1.ApiBearerAuth)(),
