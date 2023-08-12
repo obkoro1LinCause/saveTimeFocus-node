@@ -26,7 +26,6 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     if (!compareSync(password, user.password)) {
         throw new ValidationError('密码错误 !')
     }
-    console.log(email,password,user,'-1---1-')
     return user;
   }
 }

@@ -58,6 +58,7 @@ export class UserService {
     
     // 登录
     async loginUser(userDto:BaseDto){
+        // password 不是加密之后的
         let token = await this.cacheService.get(`${userDto.email}&${userDto.password}`);
         if(!token){
             token = this.authService.createToken(userDto);

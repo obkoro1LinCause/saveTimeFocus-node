@@ -29,7 +29,8 @@ let UserController = exports.UserController = class UserController {
     register(registerDto) {
         return this.userService.createUser(registerDto);
     }
-    login(loginDto, req) {
+    login(loginDto) {
+        console.log('-1-1--1', loginDto);
         return this.userService.loginUser(loginDto);
     }
     change(userDto, user) {
@@ -55,14 +56,12 @@ __decorate([
     (0, common_1.Post)('/login'),
     responser_decorator_1.Responser.handle('post login'),
     __param(0, (0, common_1.Body)()),
-    __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [user_dto_1.BaseDto, Object]),
+    __metadata("design:paramtypes", [user_dto_1.BaseDto]),
     __metadata("design:returntype", void 0)
 ], UserController.prototype, "login", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
-    (0, swagger_1.ApiBearerAuth)(),
     (0, common_1.Post)('/change_password'),
     responser_decorator_1.Responser.handle('post  change_password_user'),
     __param(0, (0, common_1.Body)()),

@@ -23,12 +23,13 @@ export class UserController {
   @UseGuards(LocalAuthGuard)
   @Post('/login')
   @Responser.handle('post login')
-  login(@Body()loginDto: BaseDto,@Req() req) {
+  login(@Body()loginDto: BaseDto) {
+    console.log('-1-1--1',loginDto)
     return this.userService.loginUser(loginDto);
   }
 
+  // TODO:需要正式页面试一试
   @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
   @Post('/change_password')
   @Responser.handle('post  change_password_user')
   change(@Body()userDto: BaseDto,@ReqParams('user') user:ReqParamsResult) {

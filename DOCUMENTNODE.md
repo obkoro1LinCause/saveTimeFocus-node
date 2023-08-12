@@ -92,7 +92,9 @@
 
 - `AuthModule`全局鉴权、Token
 - `UserModule`
+- `SocketModule`
 
 
 **核心（全局）模块**
 - `CacheModule`
+- `DatabaseModule`

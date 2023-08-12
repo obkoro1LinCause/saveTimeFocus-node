@@ -16,7 +16,6 @@ export class LocalAuthGuard extends AuthGuard('local') {
   }
 
   handleRequest(error, authInfo, errInfo) {
-
     if (authInfo && !error && !errInfo) {
       return authInfo
     } else {
