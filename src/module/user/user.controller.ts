@@ -4,50 +4,47 @@ import { RegisterDto,BaseDto,EmailDto} from './user.dto';
 import { Responser } from '@app/decorators/responser.decorator';
 import { UserService } from './user.service';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from '@app/guards/jwt.auth.guard';
 import { LocalAuthGuard } from '@app/guards/local.auth.guard';
 import { QueryParams, QueryVisitor } from '@app/decorators/queryparams.decorator';
 import { ReqParams,ReqParamsResult } from '@app/decorators/reqParams.decorator'
 
-@Controller('user')
+@Controller()
 export class UserController {
   constructor(private readonly userService: UserService) {};
 
-  @Post('/register')
+  @Post('/user_register')
   @Responser.handle('post  register_user')
   register(@Body()registerDto: RegisterDto) {
     return this.userService.createUser(registerDto);
   }
 
   @UseGuards(LocalAuthGuard)
-  @Post('/login')
+  @Post('/user_login')
   @Responser.handle('post login')
-  login(@Body()loginDto: BaseDto) {
-    console.log('-1-1--1',loginDto)
-    return this.userService.loginUser(loginDto);
+  login(@Body()loginDto: BaseDto,@ReqParams('user') user:ReqParamsResult) {
+    return this.userService.loginUser(loginDto,user);
   }
 
   // TODO:需要正式页面试一试
   @UseGuards(JwtAuthGuard)
-  @Post('/change_password')
-  @Responser.handle('post  change_password_user')
+  @Post('/user_change_password')
+  @Responser.handle('post  user_change_password')
   change(@Body()userDto: BaseDto,@ReqParams('user') user:ReqParamsResult) {
     return this.userService.changePassword(userDto,user);
   }
 
-  @Get('/send_email_code')
-  @Responser.handle('get send_email_code')
+  @Get('/user_email_code')
+  @Responser.handle('get user_email_code')
   sendEmailCode(@Query()email:EmailDto){
-    this.userService.sendEmailCode(email);
+    return this.userService.sendEmailCode(email);
   }
 
 
 
   @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  @Get('/find_users')
-  @Responser.handle('get find_users')
+  @Get('/user_list')
+  @Responser.handle('get user_list')
   find(){
     return this.userService.findAllUsers();
   }

@@ -36,6 +36,7 @@ export class CorsMiddleware implements NestMiddleware {
     'X-E4M-With',
   ]
 
+
     // Allow Origin
     if (!origin || allowedOrigins.includes(origin) || isDevEnv) {
       res.setHeader('Access-Control-Allow-Origin', origin || '*')

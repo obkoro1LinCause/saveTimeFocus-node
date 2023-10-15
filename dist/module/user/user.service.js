@@ -48,6 +48,7 @@ const APP_CONFIG = __importStar(require("../../app.config"));
 const index_1 = require("../../utils/index");
 const sys_constant_2 = require("../../constants/sys.constant");
 const socket_gateway_1 = require("../socket/socket.gateway");
+const custom_error_1 = require("../../errors/custom.error");
 let UserService = exports.UserService = class UserService {
     constructor(userRepository, authService, cacheService, emailService, socketGateway) {
         this.userRepository = userRepository;
@@ -59,58 +60,59 @@ let UserService = exports.UserService = class UserService {
     async createUser(userDto) {
         const bool = await this.findOneUserByEmail(userDto.email);
         if (!!bool)
-            return '该邮箱已被注册，请前往登录页面';
+            return new custom_error_1.HttpCustomError({ message: '该邮箱已被注册，请前往登录页面！' });
         const emailCode = await this.cacheService.get(userDto.email);
         if (!emailCode)
-            return '验证码有效期为三十分钟，请重新发送邮箱验证码';
-        if (emailCode !== userDto.emial_auth_code)
-            return '邮箱验证码错误，请确认';
+            return new custom_error_1.HttpCustomError({ message: '验证码错误，验证码有效期为三十分钟，请重新发送邮箱验证码' });
+        if (emailCode !== userDto.emailCode)
+            return new custom_error_1.HttpCustomError({ message: '邮箱验证码错误，请确认' });
         const initUser = (0, class_transformer_1.plainToClass)(module_1.User, userDto);
-        const inviteUser = await this.findOneUserByViteCode(userDto.invite_code);
-        if (userDto.invite_code && !!!inviteUser)
-            return '邀请码错误，请确认';
+        const inviteUser = await this.findOneUserByViteCode(userDto.inviteCode);
+        if (userDto.inviteCode && !!!inviteUser)
+            return new custom_error_1.HttpCustomError({ message: '邀请码错误，请确认' });
         let stepTs = 1;
-        if (!!!userDto.invite_code || !!!inviteUser) {
-            initUser.vip_time = (0, index_1.createVipTimestamp)({
+        if (!!!userDto.inviteCode || !!!inviteUser) {
+            initUser.vipTime = (0, index_1.createVipTimestamp)({
                 base: APP_CONFIG.VIPTIME.month_ts
             });
             if (!!!inviteUser)
-                initUser.invite_code = '';
+                initUser.inviteCode = '';
             return await this.userRepository.save(initUser);
         }
         else {
             stepTs = 2;
         }
         const time = (0, index_1.createVipTimestamp)({
-            timestamp: inviteUser.vip_time,
+            timestamp: inviteUser.vipTime,
             base: APP_CONFIG.VIPTIME.month_ts * stepTs
         });
-        initUser.vip_time = (0, index_1.createVipTimestamp)({
+        initUser.vipTime = (0, index_1.createVipTimestamp)({
             base: APP_CONFIG.VIPTIME.month_ts * stepTs
         });
-        await this.userRepository.update(inviteUser.id, { vip_time: time });
+        await this.userRepository.update(inviteUser.id, { vipTime: time });
         return await this.userRepository.save(initUser);
     }
-    async loginUser(userDto) {
-        let token = await this.cacheService.get(`${userDto.email}&${userDto.password}`);
+    async loginUser(userDto, user) {
+        const { id } = user;
+        if (!id)
+            return new custom_error_1.HttpCustomError({ message: '登录失败，用户信息错误' });
+        let token = await this.cacheService.get(`${id}`);
         if (!token) {
             token = this.authService.createToken(userDto);
-            this.cacheService.set(`${userDto.email}&${userDto.password}`, token, { ttl: 60 * 60 * 24 });
+            this.cacheService.set(`${id}`, token, { ttl: 60 * 60 * 24 });
         }
-        return { token, email: userDto.email };
+        return { token, email: userDto.email, id };
     }
     async changePassword(userDto, user) {
         const { email, password } = userDto;
-        const existuser = await this.findOneUserByEmail(email);
-        if (!existuser)
-            return '用户不存在，请先注册!';
-        await this.cacheService.delete(`${user === null || user === void 0 ? void 0 : user.email}&${user === null || user === void 0 ? void 0 : user.password}`);
-        const entity = (0, class_transformer_1.plainToClass)(module_1.User, Object.assign(Object.assign({}, existuser), { password }));
+        const { id } = user;
+        await this.cacheService.delete(`${id}`);
+        const entity = (0, class_transformer_1.plainToClass)(module_1.User, Object.assign(Object.assign({}, user), { password }));
         const result = await this.userRepository.save(entity);
         const token = this.authService.createToken(userDto);
-        this.cacheService.set(`${email}&${password}`, token, { ttl: 60 * 60 * 24 });
+        this.cacheService.set(`${id}`, token, { ttl: 60 * 60 * 24 });
         console.log('-1-1-1-');
-        return { token, email };
+        return { token, email, id };
     }
     async findAllUsers() {
         return await this.userRepository.find();
@@ -129,7 +131,7 @@ let UserService = exports.UserService = class UserService {
             return null;
         return await this.userRepository.findOne({
             where: {
-                self_invite_code: code
+                selfInviteCode: code
             }
         });
     }
@@ -149,7 +151,7 @@ let UserService = exports.UserService = class UserService {
 };
 exports.UserService = UserService = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, common_1.Inject)(sys_constant_1.DB_USERS_TOKEN)),
+    __param(0, (0, common_1.Inject)(sys_constant_1.DB_USER_TOKEN)),
     __metadata("design:paramtypes", [typeorm_1.Repository,
         auth_service_1.AuthService,
         cache_service_1.CacheService,

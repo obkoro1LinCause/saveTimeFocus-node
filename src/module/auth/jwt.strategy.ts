@@ -32,16 +32,16 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       const token = ExtractJwt.fromAuthHeaderAsBearerToken()(req);
 
       const existUser = await this.authService.getUser(user.email);
-      const cacheToken = await this.cacheService.get(`${user.email}&${user.password}`);
-
       if (!existUser) {
         throw  new HttpUnauthorizedError('用户不存在!');
       }
+
+      const cacheToken = await this.cacheService.get(`${existUser.id}`);
       if(cacheToken !== token){
         throw new HttpUnauthorizedError('token不正确!');
       }
-      this.cacheService.set(`${user.email}&${user.password}`,token,{ ttl:60 * 60 * 24});
+      this.cacheService.set(`${existUser.id}`,token,{ ttl:60 * 60 * 24});
 
-      return user;
+      return existUser;
     }
 }

@@ -1,0 +1,1 @@
+INSERT INTO `task_list` (`id`, `type`, `parentId`, `name`,`sort`) VALUES (1, 3, 0, '任务', 1);

@@ -5,6 +5,7 @@ import { AuthService } from '../auth/auth.service';
 import { CacheService } from '@app/processors/cache/cache.service';
 import { EmailService } from '@app/processors/helper/helper.service.email';
 import { SocketGateway } from '@app/module/socket/socket.gateway';
+import { HttpCustomError } from '@app/errors/custom.error';
 export declare class UserService {
     private readonly userRepository;
     private readonly authService;
@@ -12,14 +13,16 @@ export declare class UserService {
     private readonly emailService;
     private readonly socketGateway;
     constructor(userRepository: Repository<User>, authService: AuthService, cacheService: CacheService, emailService: EmailService, socketGateway: SocketGateway);
-    createUser(userDto: RegisterDto): Promise<User | "该邮箱已被注册，请前往登录页面" | "验证码有效期为三十分钟，请重新发送邮箱验证码" | "邮箱验证码错误，请确认" | "邀请码错误，请确认">;
-    loginUser(userDto: BaseDto): Promise<{
+    createUser(userDto: RegisterDto): Promise<User | HttpCustomError>;
+    loginUser(userDto: BaseDto, user: any): Promise<HttpCustomError | {
         token: unknown;
         email: string;
+        id: any;
     }>;
-    changePassword(userDto: any, user: any): Promise<"用户不存在，请先注册!" | {
+    changePassword(userDto: any, user: any): Promise<{
         token: string;
         email: any;
+        id: any;
     }>;
     findAllUsers(): Promise<User[]>;
     findOneUserByEmail(email: any): Promise<User>;

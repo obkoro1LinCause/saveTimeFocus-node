@@ -40,28 +40,25 @@ const logging_interceptor_1 = require("./interceptors/logging.interceptor");
 const logger_1 = __importDefault(require("./utils/logger"));
 const APP_CONFIG = __importStar(require("./app.config"));
 const app_environment_1 = require("./app.environment");
-const swagger_1 = require("@nestjs/swagger");
 const common_1 = require("@nestjs/common");
+const path_1 = __importDefault(require("path"));
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule, app_environment_1.isProdEnv ? { logger: false } : {});
     app.use((0, helmet_1.default)());
     app.use((0, compression_1.default)());
     app.use(body_parser_1.default.json({ limit: '1mb' }));
     app.use(body_parser_1.default.urlencoded({ extended: false }));
+    app.setGlobalPrefix('/focus_sys');
+    app.useStaticAssets('public');
+    app.useStaticAssets(path_1.default.join(__dirname, '..', 'public'), {
+        prefix: '/static/'
+    });
     app.useGlobalPipes(new common_1.ValidationPipe({
         enableDebugMessages: true,
         transform: true
     }));
     app.useGlobalFilters(new error_filter_1.HttpExceptionFilter());
     app.useGlobalInterceptors(new transform_interceptor_1.TransformInterceptor(), new error_interceptor_1.ErrorInterceptor(), new logging_interceptor_1.LoggingInterceptor());
-    const options = new swagger_1.DocumentBuilder()
-        .addBearerAuth()
-        .setTitle('save-time-focus-serve')
-        .setDescription('接口文档')
-        .setVersion('1.0')
-        .build();
-    const document = swagger_1.SwaggerModule.createDocument(app, options);
-    swagger_1.SwaggerModule.setup('swagger-doc', app, document);
     await app.listen(app_config_1.APP.PORT);
 }
 bootstrap().then(() => {

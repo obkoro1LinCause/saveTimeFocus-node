@@ -13,15 +13,26 @@ import { LoggingInterceptor } from '@app/interceptors/logging.interceptor'
 import logger from '@app/utils/logger'
 import * as APP_CONFIG from '@app/app.config'
 import { environment, isProdEnv } from '@app/app.environment'
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
+import path from 'path';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, isProdEnv ? { logger: false } : {})
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, isProdEnv ? { logger: false } : {});
+
   app.use(helmet())
   app.use(compression())
   app.use(bodyParser.json({ limit: '1mb' }))
-  app.use(bodyParser.urlencoded({ extended: false }))
+  app.use(bodyParser.urlencoded({ extended: false }));
+  // 应用全局前缀
+  app.setGlobalPrefix('/focus_sys');
+
+  // 静态目录配置
+  // http://localhost:8010/en.json
+  app.useStaticAssets('public');
+  app.useStaticAssets(path.join(__dirname, '..', 'public'),{
+    prefix: '/static/'
+  });
 
   //开启一个全局验证管道
   app.useGlobalPipes(new ValidationPipe({
@@ -32,15 +43,6 @@ async function bootstrap() {
   app.useGlobalFilters(new HttpExceptionFilter())
   // 全局拦截器
   app.useGlobalInterceptors(new TransformInterceptor(),new ErrorInterceptor(),new LoggingInterceptor());
-
-  const options = new DocumentBuilder()
-    .addBearerAuth()
-    .setTitle('save-time-focus-serve')
-    .setDescription('接口文档')
-    .setVersion('1.0')
-    .build();
-  const document = SwaggerModule.createDocument(app, options);
-  SwaggerModule.setup('swagger-doc', app, document);
 
   await app.listen(APP.PORT);
 }

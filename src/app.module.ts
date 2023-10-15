@@ -14,9 +14,10 @@ import { OriginMiddleware } from '@app/middlewares/origin.middleware'
 import { AuthModule } from './module/auth/auth.module';
 import { UserModule } from './module/user/user.module';
 import { SocketModule } from './module/socket/socket.module';
+import { TodoModule } from './module/todo/todo.module';
 
 @Module({
-  imports: [DatabaseModule,CacheModule,HelperModule,AuthModule,UserModule, SocketModule],
+  imports: [DatabaseModule,CacheModule,HelperModule,AuthModule,UserModule, SocketModule, TodoModule],
   controllers: [AppController],
   providers: [],
 })

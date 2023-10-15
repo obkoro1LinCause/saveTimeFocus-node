@@ -25,7 +25,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const errorMessage = isString(errorResponse) ? errorResponse : errorResponse.message
     const errorInfo = isString(errorResponse) ? null : errorResponse.error
 
-
     const data: HttpResponseError = {
       status: ResponseStatus.Error,
       message: errorMessage,

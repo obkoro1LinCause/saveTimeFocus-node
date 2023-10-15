@@ -2,7 +2,7 @@ import { hashSync } from 'bcryptjs';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import randomstring from 'randomstring';
-import { EquipmentEnum } from '@app/model/user_equipment.model'
+import { EquipmentEnum } from '@app/types';
 
 dayjs.extend(utc);
 

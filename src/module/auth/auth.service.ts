@@ -1,6 +1,6 @@
 import { Injectable,Inject } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { DB_USERS_TOKEN } from '@app/constants/sys.constant';
+import { DB_USER_TOKEN } from '@app/constants/sys.constant';
 import { Repository } from 'typeorm';
 import { User } from '@app/module';
 
@@ -8,7 +8,7 @@ import { User } from '@app/module';
 export class AuthService {
     constructor(
         private readonly jwtService: JwtService,
-        @Inject(DB_USERS_TOKEN) private readonly userRepository:Repository<User>,
+        @Inject(DB_USER_TOKEN) private readonly userRepository:Repository<User>,
       ) {}
 
     createToken(user) {

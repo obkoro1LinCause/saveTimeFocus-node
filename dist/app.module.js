@@ -17,6 +17,7 @@ const origin_middleware_1 = require("./middlewares/origin.middleware");
 const auth_module_1 = require("./module/auth/auth.module");
 const user_module_1 = require("./module/user/user.module");
 const socket_module_1 = require("./module/socket/socket.module");
+const todo_module_1 = require("./module/todo/todo.module");
 let AppModule = exports.AppModule = class AppModule {
     configure(consumer) {
         consumer.apply(cors_middleware_1.CorsMiddleware, origin_middleware_1.OriginMiddleware).forRoutes('*');
@@ -24,7 +25,7 @@ let AppModule = exports.AppModule = class AppModule {
 };
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
-        imports: [mysql_module_1.DatabaseModule, cache_module_1.CacheModule, helper_module_1.HelperModule, auth_module_1.AuthModule, user_module_1.UserModule, socket_module_1.SocketModule],
+        imports: [mysql_module_1.DatabaseModule, cache_module_1.CacheModule, helper_module_1.HelperModule, auth_module_1.AuthModule, user_module_1.UserModule, socket_module_1.SocketModule, todo_module_1.TodoModule],
         controllers: [app_controller_1.AppController],
         providers: [],
     })

@@ -3,9 +3,9 @@ import { Request } from 'express'
 import { createParamDecorator, ExecutionContext } from '@nestjs/common'
 
 export interface User {
+ id?:number,
  email?:string,
- password?:string
- [key: string]: string
+ password?:string,
 }
 
 
