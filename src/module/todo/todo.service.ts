@@ -34,6 +34,7 @@ export class TodoService {
             pre[cur.id] = cur;
             return pre;
         },{});
+        
         // TODO:1.是否需要封装一个固定的list给前端 2.根据sort值返回有序数组
         return taskList.reduce((pre, cur) => {
             const parentId = cur.parentId;

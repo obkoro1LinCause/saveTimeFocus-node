@@ -1,6 +1,5 @@
 import { Entity, Column,BaseEntity,PrimaryGeneratedColumn,CreateDateColumn,BeforeInsert,BeforeUpdate,UpdateDateColumn,OneToMany } from 'typeorm';
 import { getProviderByModelClass } from '@app/transformers/model.transformer';
-import { IsString, IsNotEmpty, IsEmail} from 'class-validator';
 import { DB_TASKLIST_TOKEN } from '@app/constants/sys.constant';
 import { Task } from './todo.task.model';
 
@@ -13,48 +12,50 @@ export class TaskList{
   
   @Column('int',{
     name:'type',
-    comment:'1:清单文件夹，2:自建清单，3:默认任务清单',
+    comment:'1:清单文件夹，2:自建清单，3:默认任务清单,4:归档',
     unsigned:true,
-    nullable: true,
   })
-  type:number
+  type:number;
 
   @Column('int',{
     name:'parentId',
     comment:'所在文件夹的ID，为0表示最顶层',
     unsigned:true,
   })
-  parentId:number
+  parentId:number;
 
   @Column('int',{
     comment:'用户唯一标识符',
     name:'userId',
-    nullable: true,
     unsigned:true
   })
-  userId:number | null
+  userId:number;
 
   @OneToMany(()=>Task,task=>task.taskList,{
     createForeignKeyConstraints: false,
   })
   task:Task[]
 
-  @IsNotEmpty()
   @Column('varchar',{
     comment:'名称',
     name:'name',
-    unique: true,
     length:100
   })
   name: string;
 
   @Column('int',{
     comment:'排序值',
-    name:'sort',
+    name:'sortOrder',
     unsigned:true,
+  })
+  sortOrder: number;
+
+  @Column('boolean',{
+    comment:'是否已归档',
+    name:'isArchived',
     nullable: true,
   })
-  sort: number;
+  isArchived: boolean | null;
 
   @CreateDateColumn({  
     type: 'timestamp',

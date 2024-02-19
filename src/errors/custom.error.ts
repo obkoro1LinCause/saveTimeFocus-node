@@ -10,7 +10,7 @@ import { ExceptionInfo } from '@app/interfaces/response.interface'
  * @example new HttpCustomError({ message: 'error message', error: new Error(xxx) })
  */
 export class HttpCustomError extends HttpException {
-    constructor(options:ExceptionInfo,statusCode?: HttpStatus) {
-      super(options, statusCode || HttpStatus.INTERNAL_SERVER_ERROR);
+    constructor(options:ExceptionInfo,code?: HttpStatus) {
+      super(options, code || HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }

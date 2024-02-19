@@ -22,13 +22,15 @@ export type ExceptionInfo =
 // HTTP error
 export type HttpResponseError = HttpResponseBase & {
   error: any  //错误的原因
-  debug?: string
+  debug?: string,
+  code?:number
 }
 
 // HTTP success
 export type HttpResponseSuccess<T> = HttpResponseBase & {
   params?: any
-  result: T
+  result: T,
+  code?:number
 }
 
 // HTTP response

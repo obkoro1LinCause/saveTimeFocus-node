@@ -24,11 +24,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         } as StrategyOptions);
     }
 
+
     // 该方法参数表示通过守卫后解析token得到的内容，返回值将传入控制器方法参数
     async validate(req:any,payload: any) {
        // token 解密来的字段
       const user = { ...payload };
-      
       const token = ExtractJwt.fromAuthHeaderAsBearerToken()(req);
 
       const existUser = await this.authService.getUser(user.email);

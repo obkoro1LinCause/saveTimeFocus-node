@@ -7,7 +7,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.HttpExceptionFilter = void 0;
-const lodash_1 = require("lodash");
 const common_1 = require("@nestjs/common");
 const response_interface_1 = require("../interfaces/response.interface");
 const value_constant_1 = require("../constants/value.constant");
@@ -18,13 +17,13 @@ let HttpExceptionFilter = exports.HttpExceptionFilter = class HttpExceptionFilte
         const response = host.switchToHttp().getResponse();
         const exceptionStatus = exception.getStatus() || common_1.HttpStatus.INTERNAL_SERVER_ERROR;
         const errorResponse = exception.getResponse();
-        const errorMessage = (0, lodash_1.isString)(errorResponse) ? errorResponse : errorResponse.message;
-        const errorInfo = (0, lodash_1.isString)(errorResponse) ? null : errorResponse.error;
+        const errorInfo = errorResponse === null || errorResponse === void 0 ? void 0 : errorResponse.error;
         const data = {
             status: response_interface_1.ResponseStatus.Error,
-            message: errorMessage,
-            error: (0, lodash_1.isString)(errorInfo) ? errorInfo : JSON.stringify(errorInfo),
+            message: errorResponse,
+            error: (errorInfo === null || errorInfo === void 0 ? void 0 : errorInfo.response) || errorInfo,
             debug: app_environment_1.isDevEnv ? (errorInfo === null || errorInfo === void 0 ? void 0 : errorInfo.stack) || exception.stack : value_constant_1.UNDEFINED,
+            code: exceptionStatus
         };
         if (exceptionStatus === common_1.HttpStatus.NOT_FOUND) {
             data.error = data.error || `Not found`;

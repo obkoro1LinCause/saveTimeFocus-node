@@ -32,10 +32,11 @@ export class TodoController {
   createTag(@Body() taskBody,@ReqParams('user') user:User) {
     return this.todoService.createTag();
   }
+  
   //list查询
   @UseGuards(JwtAuthGuard)
   @Get('/todo_query_list')
-  @Responser.handle('post  todo_query_list')
+  @Responser.handle('get  todo_query_list')
   todoQueryList(@Query() query:QueryDTO,@ReqParams('user') user:User) {
     return this.todoService.todoQueryList(query,user);
   }

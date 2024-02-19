@@ -25,11 +25,12 @@ export class UserService {
      // 创建用户
     async createUser(userDto:RegisterDto) {
         const bool =  await this.findOneUserByEmail(userDto.email);
-        
         if(!!bool) return new HttpCustomError({ message: '该邮箱已被注册，请前往登录页面！'})
+
         const emailCode = await this.cacheService.get(userDto.email);
         if(!emailCode) return new HttpCustomError({ message: '验证码错误，验证码有效期为三十分钟，请重新发送邮箱验证码'});
         if(emailCode !== userDto.emailCode) return new HttpCustomError({ message: '邮箱验证码错误，请确认'});
+
         const initUser = plainToClass(User,userDto);
         const inviteUser = await this.findOneUserByViteCode(userDto.inviteCode);
         if(userDto.inviteCode && !!!inviteUser) return new HttpCustomError({ message:'邀请码错误，请确认'});
@@ -43,7 +44,6 @@ export class UserService {
         }else{
             stepTs = 2;
         }
-        
         const time = createVipTimestamp({
             timestamp:inviteUser.vipTime,
             base:APP_CONFIG.VIPTIME.month_ts * stepTs
@@ -54,7 +54,6 @@ export class UserService {
         });
         await this.userRepository.update(inviteUser.id,{ vipTime:time });
         return await this.userRepository.save(initUser);
-        
     }
     
     // 登录
@@ -67,7 +66,7 @@ export class UserService {
             token = this.authService.createToken(userDto);
             this.cacheService.set(`${id}`,token,{ ttl:60 * 60 * 24});
         } 
-        return { token,email:userDto.email,id};
+        return { token,email:userDto.email,id };
     }
 
     // 修改密码
@@ -92,6 +91,15 @@ export class UserService {
         return await this.userRepository.find()
     }
 
+    async findUser(userDto){
+        if(!userDto?.id && !userDto?.email) return null;
+        if(userDto?.email){
+            return await this.findOneUserByEmail(userDto?.email);
+        }else{
+            return await this.findOneUserById(userDto?.id)
+        }
+    }
+
     async findOneUserByEmail(email){
         if(!email) return null;
         return await this.userRepository.findOne({
@@ -99,6 +107,19 @@ export class UserService {
                 email
             }
         })
+    }
+    async findOneUserById(id){
+        if(!id) return null;
+        return await this.userRepository.findOne({
+            where:{
+                id
+            }
+        })
+    }
+
+    async findOneUserByToken(token){
+        const user:any = await this.authService.refreshTokenByOldToken(token);
+        return this.findOneUserByEmail(user?.email);
     }
 
     async findOneUserByViteCode(code){

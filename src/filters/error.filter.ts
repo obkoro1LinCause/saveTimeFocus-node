@@ -22,14 +22,13 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const exceptionStatus = exception.getStatus() || HttpStatus.INTERNAL_SERVER_ERROR
     const errorResponse: any = exception.getResponse() as ExceptionInfo
 
-    const errorMessage = isString(errorResponse) ? errorResponse : errorResponse.message
-    const errorInfo = isString(errorResponse) ? null : errorResponse.error
-
+    const errorInfo = errorResponse?.error;
     const data: HttpResponseError = {
       status: ResponseStatus.Error,
-      message: errorMessage,
-      error: isString(errorInfo) ? errorInfo : JSON.stringify(errorInfo),
+      message: errorResponse,
+      error: errorInfo?.response || errorInfo,
       debug: isDevEnv ? errorInfo?.stack || exception.stack : UNDEFINED,
+      code:exceptionStatus
     }
 
     // default 404

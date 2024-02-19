@@ -40,7 +40,6 @@ const logging_interceptor_1 = require("./interceptors/logging.interceptor");
 const logger_1 = __importDefault(require("./utils/logger"));
 const APP_CONFIG = __importStar(require("./app.config"));
 const app_environment_1 = require("./app.environment");
-const common_1 = require("@nestjs/common");
 const path_1 = __importDefault(require("path"));
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule, app_environment_1.isProdEnv ? { logger: false } : {});
@@ -53,10 +52,6 @@ async function bootstrap() {
     app.useStaticAssets(path_1.default.join(__dirname, '..', 'public'), {
         prefix: '/static/'
     });
-    app.useGlobalPipes(new common_1.ValidationPipe({
-        enableDebugMessages: true,
-        transform: true
-    }));
     app.useGlobalFilters(new error_filter_1.HttpExceptionFilter());
     app.useGlobalInterceptors(new transform_interceptor_1.TransformInterceptor(), new error_interceptor_1.ErrorInterceptor(), new logging_interceptor_1.LoggingInterceptor());
     await app.listen(app_config_1.APP.PORT);

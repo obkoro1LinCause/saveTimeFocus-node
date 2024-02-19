@@ -2,6 +2,7 @@ import { Entity, Column,PrimaryGeneratedColumn,CreateDateColumn,BeforeInsert,Bef
 import { getProviderByModelClass } from '@app/transformers/model.transformer';
 import { DB_USER_TOKEN } from '@app/constants/sys.constant'
 import { createHashStr,createRandomStr } from '@app/utils';
+import { Exclude } from "class-transformer";
 
 @Entity('user')
 export class User{
@@ -16,11 +17,15 @@ export class User{
   })
   email: string;
 
+  
   @Column('varchar',{
     comment:'密码',
     name:'password',
   })
   password:string
+
+  @Column({ length: 100, nullable: true,  comment:'昵称', })
+  nickname: string;
 
   @Column('varchar',{
     comment:'自己的邀请码',
@@ -81,6 +86,7 @@ export class User{
   @BeforeInsert() 
   @BeforeUpdate()
   md5Pwd() { 
+    if (!this.password) return;
     this.password = createHashStr(this.password);
   } 
 

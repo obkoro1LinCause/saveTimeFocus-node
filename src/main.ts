@@ -13,7 +13,7 @@ import { LoggingInterceptor } from '@app/interceptors/logging.interceptor'
 import logger from '@app/utils/logger'
 import * as APP_CONFIG from '@app/app.config'
 import { environment, isProdEnv } from '@app/app.environment'
-import { ValidationPipe } from '@nestjs/common';
+// import { ValidationPipe } from '@nestjs/common';
 import path from 'path';
 import { NestExpressApplication } from '@nestjs/platform-express';
 
@@ -35,10 +35,11 @@ async function bootstrap() {
   });
 
   //开启一个全局验证管道
-  app.useGlobalPipes(new ValidationPipe({
-    enableDebugMessages:true,
-    transform:true
-  })) 
+  // app.useGlobalPipes(new ValidationPipe({
+  //   enableDebugMessages:true,
+  //   transform:true
+  // })) 
+  
   // 全局未处理的异常捕获
   app.useGlobalFilters(new HttpExceptionFilter())
   // 全局拦截器

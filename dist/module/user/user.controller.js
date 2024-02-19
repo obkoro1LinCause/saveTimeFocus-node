@@ -37,9 +37,17 @@ let UserController = exports.UserController = class UserController {
     sendEmailCode(email) {
         return this.userService.sendEmailCode(email);
     }
-    find() {
+    findUsers() {
         return this.userService.findAllUsers();
     }
+    findUser(userDto) {
+        return this.userService.findUser(userDto);
+    }
+    findUserByToken(token) {
+        console.log(token, '====token====');
+        return this.userService.findOneUserByToken(token.token);
+    }
+    ;
 };
 __decorate([
     (0, common_1.Post)('/user_register'),
@@ -84,7 +92,25 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
-], UserController.prototype, "find", null);
+], UserController.prototype, "findUsers", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Post)('/user'),
+    responser_decorator_1.Responser.handle('post user'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [user_dto_1.UserDto]),
+    __metadata("design:returntype", void 0)
+], UserController.prototype, "findUser", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Get)('/user_by_token'),
+    responser_decorator_1.Responser.handle('get user_by_token'),
+    __param(0, (0, common_1.Query)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [user_dto_1.TokenDto]),
+    __metadata("design:returntype", void 0)
+], UserController.prototype, "findUserByToken", null);
 exports.UserController = UserController = __decorate([
     (0, common_1.Controller)(),
     __metadata("design:paramtypes", [user_service_1.UserService])

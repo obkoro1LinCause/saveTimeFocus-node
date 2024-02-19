@@ -1,4 +1,4 @@
-import { RegisterDto, BaseDto, EmailDto } from './user.dto';
+import { RegisterDto, BaseDto, EmailDto, UserDto, TokenDto } from './user.dto';
 import { UserService } from './user.service';
 import { ReqParamsResult } from '@app/decorators/reqParams.decorator';
 export declare class UserController {
@@ -16,5 +16,7 @@ export declare class UserController {
         id: any;
     }>;
     sendEmailCode(email: EmailDto): Promise<void>;
-    find(): Promise<import("..").User[]>;
+    findUsers(): Promise<import("..").User[]>;
+    findUser(userDto: UserDto): Promise<import("..").User>;
+    findUserByToken(token: TokenDto): Promise<import("..").User>;
 }

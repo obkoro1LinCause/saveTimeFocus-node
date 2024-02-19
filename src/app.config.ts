@@ -27,7 +27,7 @@ export const CROSS_DOMAIN = {
 
 export const JWT_CONFIG = {
     secret: 'secretKey', // 加密密钥
-    expiresIn: '',       // 过期时间24h，不过期不设置key
+    // expiresIn: '',       // 过期时间24h，不过期不设置key
     ignoreExpiration:true,
     passReqToCallback:true
 };

@@ -117,6 +117,16 @@ let UserService = exports.UserService = class UserService {
     async findAllUsers() {
         return await this.userRepository.find();
     }
+    async findUser(userDto) {
+        if (!(userDto === null || userDto === void 0 ? void 0 : userDto.id) && !(userDto === null || userDto === void 0 ? void 0 : userDto.email))
+            return null;
+        if (userDto === null || userDto === void 0 ? void 0 : userDto.email) {
+            return await this.findOneUserByEmail(userDto === null || userDto === void 0 ? void 0 : userDto.email);
+        }
+        else {
+            return await this.findOneUserById(userDto === null || userDto === void 0 ? void 0 : userDto.id);
+        }
+    }
     async findOneUserByEmail(email) {
         if (!email)
             return null;
@@ -125,6 +135,19 @@ let UserService = exports.UserService = class UserService {
                 email
             }
         });
+    }
+    async findOneUserById(id) {
+        if (!id)
+            return null;
+        return await this.userRepository.findOne({
+            where: {
+                id
+            }
+        });
+    }
+    async findOneUserByToken(token) {
+        const user = await this.authService.refreshTokenByOldToken(token);
+        return this.findOneUserByEmail(user === null || user === void 0 ? void 0 : user.email);
     }
     async findOneUserByViteCode(code) {
         if (!code)

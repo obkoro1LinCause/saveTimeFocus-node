@@ -9,9 +9,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
 const app_controller_1 = require("./app.controller");
+const core_1 = require("@nestjs/core");
 const mysql_module_1 = require("./processors/database/mysql.module");
 const cache_module_1 = require("./processors/cache/cache.module");
 const helper_module_1 = require("./processors/helper/helper.module");
+const validation_pipe_1 = require("./pipes/validation.pipe");
 const cors_middleware_1 = require("./middlewares/cors.middleware");
 const origin_middleware_1 = require("./middlewares/origin.middleware");
 const auth_module_1 = require("./module/auth/auth.module");
@@ -27,7 +29,12 @@ exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [mysql_module_1.DatabaseModule, cache_module_1.CacheModule, helper_module_1.HelperModule, auth_module_1.AuthModule, user_module_1.UserModule, socket_module_1.SocketModule, todo_module_1.TodoModule],
         controllers: [app_controller_1.AppController],
-        providers: [],
+        providers: [
+            {
+                provide: core_1.APP_PIPE,
+                useClass: validation_pipe_1.ValidationPipe,
+            },
+        ],
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map

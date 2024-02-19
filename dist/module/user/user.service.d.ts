@@ -25,7 +25,10 @@ export declare class UserService {
         id: any;
     }>;
     findAllUsers(): Promise<User[]>;
+    findUser(userDto: any): Promise<User>;
     findOneUserByEmail(email: any): Promise<User>;
+    findOneUserById(id: any): Promise<User>;
+    findOneUserByToken(token: any): Promise<User>;
     findOneUserByViteCode(code: any): Promise<User>;
     sendEmailCode(emailDto: EmailDto): Promise<void>;
 }

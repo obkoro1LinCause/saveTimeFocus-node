@@ -32,9 +32,9 @@ export function createHashStr(password,num = 10){
     return hashSync(password,num);
 }
 
-// 随机生成字符串,默认生成4位数
+// 随机生成字符串,默认生成6位数
 export function createRandomStr(options?:RandomStrOptions,cb?:Function){
-  if(!options) return randomstring.generate(4);
+  if(!options) return randomstring.generate(6);
   return randomstring.generate(options,cb)
 }
 

@@ -15,6 +15,11 @@ export class AuthService {
         const payload = { ...user };
         return this.jwtService.sign(payload);
     }
+
+    refreshTokenByOldToken(token:string){
+        const user = this.jwtService.decode(token);
+        return user;
+    }
     
     async getUser(email: string){
         return await this.userRepository

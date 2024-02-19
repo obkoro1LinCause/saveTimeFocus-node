@@ -21,7 +21,6 @@ exports.CROSS_DOMAIN = {
 };
 exports.JWT_CONFIG = {
     secret: 'secretKey',
-    expiresIn: '',
     ignoreExpiration: true,
     passReqToCallback: true
 };

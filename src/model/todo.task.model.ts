@@ -1,8 +1,8 @@
-import { Entity, Column,BaseEntity,PrimaryGeneratedColumn,CreateDateColumn,BeforeInsert,BeforeUpdate,UpdateDateColumn,OneToMany,ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, JoinTable,Column,BaseEntity,PrimaryGeneratedColumn,CreateDateColumn,BeforeInsert,BeforeUpdate,UpdateDateColumn,OneToMany,ManyToOne, JoinColumn, ManyToMany } from 'typeorm';
 import { getProviderByModelClass } from '@app/transformers/model.transformer';
-import { IsString, IsNotEmpty, IsEmail} from 'class-validator';
 import { DB_TASK_TOKEN } from '@app/constants/sys.constant'
-import { TaskList } from './todo.list.model'
+import { TaskList } from './todo.list.model';
+import { Tag } from './todo.tag.model';
 
 
 /**
@@ -33,42 +33,110 @@ export class Task{
   @JoinColumn({name:'taskListId'})
   taskList:TaskList
 
-  @IsNotEmpty()
-  @Column('varchar',{
-    comment:'任务的标题',
-    name:'name',
-    nullable: false,
-    unique: true
-  })
-  name: string;
+  @ManyToMany(()=>Tag,tag=>tag.tasks,{nullable:true,createForeignKeyConstraints: false})
+  @JoinTable({name:'taskTag'})
+  tags:Tag[]
 
   @Column('varchar',{
-    comment:'任务的描述',
+    comment:'任务的标题',
+    name:'title',
+    unique: true
+  })
+  title: string;
+
+  @Column('longtext',{
+    comment:'任务描述',
     name:'description',
     nullable: true,
   })
   description: string | null;
 
-  @Column({  
-    type: 'timestamp',
-    name: 'dueAt',
-    comment: '任务的截止日期',
-    nullable:true
+  @Column('int',{
+    comment:'排序值',
+    name:'sortOrder',
+    unsigned:true,
   })
-  dueAt:Date
+  sortOrder: number;
+
+  @Column('varchar',{
+    comment:'时区标识',
+    name:'timeZone',
+  })
+  timeZone:string
 
   @Column('int',{
-    comment:'任务的优先级（0-3）:0:无优先级,1:高优先级,2:中优先级,3:低优先级',
+    comment:'任务的优先级:0:无优先级,1:高优先级,2:中优先级,3:低优先级',
     name:'priority',
     unsigned:true
   })
-  priority:number
+  priority:number | null;
 
   @Column('int',{
-    comment:'0:待定，1:完成，2:已计划',
+    comment:'1:完成，2:已计划,3:待定(2,3表示未完成)',
     name:'status',
   })
-  status:number
+  status:number;
+
+  @Column('boolean',{
+    comment:'任务是否删除',
+    name:'isDel',
+    default:false
+  })
+  isDel:boolean;
+
+  @Column('longtext',{
+    comment:'番茄时间内容，json字符串',
+    name:'tomatoContent',
+    nullable:true
+  })
+  tomatoContent:string | null;
+
+  @Column('longtext',{
+    comment:'重复时间内容，json字符串',
+    name:'repeatContent',
+    nullable:true
+  })
+  repeatContent:string | null;
+
+  @Column({
+    type: 'timestamp',
+    name: 'modifiedAt',
+    comment: '任务更新日期',
+    nullable:true
+  })
+  modifiedAt:Date | null
+
+  @Column({
+    type: 'timestamp',
+    name: 'startAt',
+    comment: '任务开始日期',
+    nullable:true
+  })
+  startAt:Date | null
+
+  @Column({  
+    type: 'timestamp',
+    name: 'dueAt',
+    comment: '任务截止日期',
+    nullable:true
+  })
+  dueAt:Date | null;
+
+  @Column({  
+    type: 'timestamp',
+    name: 'completedAt',
+    comment: '任务完成日期（有表示已完成）',
+    nullable:true
+  })
+  completedAt:Date | null;
+
+  @Column({  
+    type: 'timestamp',
+    name: 'delAt',
+    comment: '任务删除日期',
+    nullable:true
+  })
+  delAt:Date | null;
 
   @CreateDateColumn({  
     type: 'timestamp',
@@ -76,7 +144,15 @@ export class Task{
     name: 'createAt',
     comment: '任务的创建日期'
   })
-  createAt:Date
+  createAt:Date;
+
+  @UpdateDateColumn({ 
+    type: 'timestamp',
+    nullable: false,
+    name: 'updateAt',
+    comment: '更新时间',
+  })
+  updateAt: Date;
 
 };
 

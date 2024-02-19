@@ -1,6 +1,6 @@
 
 import { IntersectionType } from '@nestjs/mapped-types'
-import { IsInt, IsOptional, IsString,IsNotEmpty,IsEmail, isString} from 'class-validator'
+import { IsInt, IsOptional, IsString,IsNotEmpty,IsEmail, isString } from 'class-validator'
 
 
 // IntersectionType() 函数将两个类型合并成一个类型。
@@ -32,6 +32,26 @@ export class RegisterDto extends BaseDto{
 export class EmailDto {
     @IsEmail()
     @IsNotEmpty()
+    email:string;
+}
+
+export class IdDto {
+    @IsNotEmpty()
+    id:number;
+}
+
+export class TokenDto {
+    @IsNotEmpty()
+    token:string;
+}
+
+export class UserDto{
+    @IsOptional()
+    @IsInt()
+    id:number;
+
+    @IsOptional()
+    @IsString()
     email:string;
 }
 

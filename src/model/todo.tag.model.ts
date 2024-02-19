@@ -1,7 +1,8 @@
-import { Entity, Column,BaseEntity,PrimaryGeneratedColumn,CreateDateColumn,UpdateDateColumn } from 'typeorm';
+import { Entity, Column,BaseEntity,PrimaryGeneratedColumn,CreateDateColumn,UpdateDateColumn,OneToMany, ManyToMany } from 'typeorm';
 import { getProviderByModelClass } from '@app/transformers/model.transformer';
 import { IsString, IsNotEmpty, IsEmail} from 'class-validator';
 import { DB_TAG_TOKEN } from '@app/constants/sys.constant'
+import { Task } from './todo.task.model';
 
 // 标签表
 @Entity('tag')
@@ -17,15 +18,12 @@ export class Tag{
     })
     userId:number
 
-    @Column('int',{
-      comment:'与任务表的外键关联',
-      name:'taskId',
-      nullable: false,
-      unsigned:true
+    @ManyToMany(()=>Task,task=>task.tags,{
+      createForeignKeyConstraints: false,
+      nullable:true
     })
-    taskId:string
+    tasks:Task[]
 
-    @IsNotEmpty()
     @Column('varchar',{
       comment:'标签名称',
       name:'name',
@@ -34,6 +32,13 @@ export class Tag{
       length:100
     })
     name: string;
+
+    @Column('int',{
+      comment:'排序值',
+      name:'sortOrder',
+      unsigned:true,
+    })
+    sortOrder: number;
 
     @Column('varchar',{
       comment:'标签的颜色',

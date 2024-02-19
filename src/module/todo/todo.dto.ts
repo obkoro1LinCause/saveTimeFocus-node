@@ -1,6 +1,7 @@
 import { IsInt, IsString,IsNotEmpty,IsIn, IsOptional,IsDate } from 'class-validator'
+// DTO 主要定义如何通过网络发送数据的对象，通常会配合class-validator和class-transformer
 
-
+// 添加清单夹 ｜ 清单
 export class ListAddDTO{
     @IsIn([1,2,3])
     @IsInt()
@@ -16,6 +17,7 @@ export class ListAddDTO{
     parentId:number
 }
 
+// 添加任务
 export class TaskAddDTO{
     @IsNotEmpty()
     @IsString()
@@ -34,7 +36,7 @@ export class TaskAddDTO{
     priority:number
 }
 
-
+// 清单列表
 export class QueryDTO{
 
     @IsOptional()

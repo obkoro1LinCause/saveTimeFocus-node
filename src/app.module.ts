@@ -1,10 +1,13 @@
 import { Module,NestModule,MiddlewareConsumer } from '@nestjs/common'
-import { AppController } from './app.controller'
+import { AppController } from './app.controller';
+import { APP_PIPE } from '@nestjs/core'
 
 // universal modules
 import { DatabaseModule } from '@app/processors/database/mysql.module';
 import { CacheModule } from '@app/processors/cache/cache.module';
-import { HelperModule } from '@app/processors/helper/helper.module'
+import { HelperModule } from '@app/processors/helper/helper.module';
+// framework
+import { ValidationPipe } from '@app/pipes/validation.pipe';
 
 // middleware
 import { CorsMiddleware } from '@app/middlewares/cors.middleware'
@@ -19,7 +22,12 @@ import { TodoModule } from './module/todo/todo.module';
 @Module({
   imports: [DatabaseModule,CacheModule,HelperModule,AuthModule,UserModule, SocketModule, TodoModule],
   controllers: [AppController],
-  providers: [],
+  providers: [
+    {
+      provide: APP_PIPE,
+      useClass: ValidationPipe,
+    },
+  ],
 })
 // 安装应用类中间件
 export class AppModule implements NestModule {

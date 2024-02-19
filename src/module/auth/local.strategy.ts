@@ -5,7 +5,6 @@ import { IStrategyOptions, Strategy } from 'passport-local';
 import { ValidationError } from '@app/errors/validation.error';
 import { AuthService } from '@app/module/auth/auth.service';
 
-
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
   constructor(
@@ -20,7 +19,6 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
 
   async validate(email: string, password: string) {
     const user = await this.authService.getUser(email);
-
     if (!user) {
         throw new ValidationError('用户名不正确!')
     }
