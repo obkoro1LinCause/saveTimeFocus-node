@@ -19,7 +19,7 @@ export class LocalAuthGuard extends AuthGuard('local') {
     if (authInfo && !error && !errInfo) {
       return authInfo
     } else {
-      throw error || new HttpUnauthorizedError(UNDEFINED, errInfo?.message)
+      throw error || new HttpUnauthorizedError(UNDEFINED, '鉴权失败，无权限/验证异常')
     }
   }
 }

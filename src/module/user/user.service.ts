@@ -21,7 +21,7 @@ export class UserService {
         private readonly emailService: EmailService,
         private readonly socketGateway: SocketGateway
     ){}
-
+    
      // 创建用户
     async createUser(userDto:RegisterDto) {
         const bool =  await this.findOneUserByEmail(userDto.email);
@@ -34,25 +34,28 @@ export class UserService {
         const initUser = plainToClass(User,userDto);
         const inviteUser = await this.findOneUserByViteCode(userDto.inviteCode);
         if(userDto.inviteCode && !!!inviteUser) return new HttpCustomError({ message:'邀请码错误，请确认'});
-        let stepTs = 1;
-        if(!!!userDto.inviteCode || !!!inviteUser){
-            initUser.vipTime = createVipTimestamp({
-                base:APP_CONFIG.VIPTIME.month_ts
-            });
-            if(!!!inviteUser) initUser.inviteCode = '';
-            return await this.userRepository.save(initUser);
-        }else{
-            stepTs = 2;
-        }
-        const time = createVipTimestamp({
-            timestamp:inviteUser.vipTime,
-            base:APP_CONFIG.VIPTIME.month_ts * stepTs
-        });
+        
+        // TODO:vip的时间计算
+        // vip的计算规则待补充
+        // let stepTs = 1;
+        // if(!!!userDto.inviteCode || !!!inviteUser){
+        //     initUser.vipTime = createVipTimestamp({
+        //         base:APP_CONFIG.VIPTIME.month_ts
+        //     });
+        //     if(!!!inviteUser) initUser.inviteCode = '';
+        //     return await this.userRepository.save(initUser);
+        // }else{
+        //     stepTs = 2;
+        // }
+        // const time = createVipTimestamp({
+        //     timestamp:inviteUser.vipTime,
+        //     base:APP_CONFIG.VIPTIME.month_ts * stepTs
+        // });
 
-        initUser.vipTime = createVipTimestamp({
-            base:APP_CONFIG.VIPTIME.month_ts * stepTs
-        });
-        await this.userRepository.update(inviteUser.id,{ vipTime:time });
+        // initUser.vipTime = createVipTimestamp({
+        //     base:APP_CONFIG.VIPTIME.month_ts * stepTs
+        // });
+        // await this.userRepository.update(inviteUser.id,{ vipTime:time });
         return await this.userRepository.save(initUser);
     }
     
@@ -69,11 +72,20 @@ export class UserService {
         return { token,email:userDto.email,id };
     }
 
-    // 修改密码
-    async changePassword(userDto,user){
-        const { email,password } = userDto;
-        const { id } = user;
+    // 登出
+    async logoutUser(email){
+        const {id} = await this.findOneUserByEmail(email);
+        this.cacheService.delete(`${id}`);
+        return { email };
+    }
 
+    // 修改密码
+    async changePassword(userDto){
+        const { email,password } = userDto;
+
+        const user = await this.findOneUserByEmail(email);
+        if(!user)  return new HttpCustomError({ message:'邮箱不存在，请注册！'});
+        const { id } = user;
         await this.cacheService.delete(`${id}`);
         const entity = plainToClass(User, { ...user,password });
         const result = await this.userRepository.save(entity);
@@ -81,14 +93,11 @@ export class UserService {
         // 修改完密码直接登录
         const token = this.authService.createToken(userDto);
         this.cacheService.set(`${id}`,token,{ ttl:60 * 60 * 24});
-        // TODO:推送token
-        console.log('-1-1-1-')
-        // this.socketGateway.publicMessage('修改密码')
         return { token,email,id };
     }
 
     async findAllUsers(){
-        return await this.userRepository.find()
+        return await this.userRepository.find();
     }
 
     async findUser(userDto){
@@ -118,8 +127,11 @@ export class UserService {
     }
 
     async findOneUserByToken(token){
-        const user:any = await this.authService.refreshTokenByOldToken(token);
-        return this.findOneUserByEmail(user?.email);
+        const { email }:any = await this.authService.refreshTokenByOldToken(token);
+        const user:any = await this.findOneUserByEmail(email);
+        const hasToken = await this.cacheService.get(`${user?.id}`);
+        if(!!hasToken) return user;
+        return new HttpCustomError({ message:'请登录！'}); 
     }
 
     async findOneUserByViteCode(code){
@@ -131,9 +143,8 @@ export class UserService {
         })
     }
 
-    async sendEmailCode(emailDto:EmailDto){
+    async sendEmailCode(email){
         const code = createRandomStr();
-        const email = emailDto.email;
         this.cacheService.set(email,code,{ ttl:60 * 30 });
         this.emailService.sendMailAs(SEND_EMAIL_CODE, {
             to:email,

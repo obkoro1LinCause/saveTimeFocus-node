@@ -10,11 +10,10 @@ import { IsInt, IsOptional, IsString,IsNotEmpty,IsEmail, isString } from 'class-
 
 export class BaseDto{
     @IsEmail()
-    @IsNotEmpty({ message: '邮箱不能为空' })
     email:string;
 
-    @IsString()
     @IsNotEmpty({ message: '密码不能为空' })
+    @IsString()
     password:string;
 }
 

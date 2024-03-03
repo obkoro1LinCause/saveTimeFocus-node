@@ -1,5 +1,5 @@
 
-import { Controller, Get, Post, Body, Query,Req,Patch, Param, Delete,UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Query,Req,Patch, Param, Delete,UseGuards,UsePipes } from '@nestjs/common';
 import { RegisterDto,BaseDto,EmailDto,UserDto,IdDto,TokenDto } from './user.dto';
 import { Responser } from '@app/decorators/responser.decorator';
 import { UserService } from './user.service';
@@ -33,18 +33,17 @@ export class UserController {
   }
 
   // 修改密码
-  @UseGuards(JwtAuthGuard)
   @Post('/user_change_password')
   @Responser.handle('post  user_change_password')
   change(@Body()userDto: BaseDto,@ReqParams('user') user:ReqParamsResult) {
-    return this.userService.changePassword(userDto,user);
+    return this.userService.changePassword(userDto);
   }
 
   // 发送邮箱验证码
   @Get('/user_email_code')
   @Responser.handle('get user_email_code')
-  sendEmailCode(@Query() email:EmailDto){
-    return this.userService.sendEmailCode(email);
+  sendEmailCode(@Query() emailDto:EmailDto){
+    return this.userService.sendEmailCode(emailDto.email);
   }
 
   // 获取用户信息列表
@@ -63,12 +62,16 @@ export class UserController {
     return this.userService.findUser(userDto);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get('/user_by_token')
   @Responser.handle('get user_by_token')
-  findUserByToken(@Query() token:TokenDto){
-    console.log(token,'====token====');
-    return this.userService.findOneUserByToken(token.token);
+  findUserByToken(@Query() tokenDto:TokenDto){
+    return this.userService.findOneUserByToken(tokenDto.token);
+  };
+
+  @Get('/user_logout')
+  @Responser.handle('get user_logout')
+  logout(@Query() emailDto:EmailDto){
+    return this.userService.logoutUser(emailDto.email);
   };
 
 }

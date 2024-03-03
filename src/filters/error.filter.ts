@@ -21,14 +21,14 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const response = host.switchToHttp().getResponse()
     const exceptionStatus = exception.getStatus() || HttpStatus.INTERNAL_SERVER_ERROR
     const errorResponse: any = exception.getResponse() as ExceptionInfo
-
     const errorInfo = errorResponse?.error;
+
     const data: HttpResponseError = {
       status: ResponseStatus.Error,
-      message: errorResponse,
-      error: errorInfo?.response || errorInfo,
-      debug: isDevEnv ? errorInfo?.stack || exception.stack : UNDEFINED,
-      code:exceptionStatus
+      message: errorResponse?.message || errorResponse,
+      error: errorInfo,
+      code:exceptionStatus,
+      // debug: isDevEnv ? errorInfo?.stack || exception.stack : UNDEFINED,
     }
 
     // default 404

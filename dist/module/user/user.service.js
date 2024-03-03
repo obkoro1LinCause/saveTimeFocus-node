@@ -1,32 +1,9 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
 };
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
@@ -44,7 +21,6 @@ const class_transformer_1 = require("class-transformer");
 const auth_service_1 = require("../auth/auth.service");
 const cache_service_1 = require("../../processors/cache/cache.service");
 const helper_service_email_1 = require("../../processors/helper/helper.service.email");
-const APP_CONFIG = __importStar(require("../../app.config"));
 const index_1 = require("../../utils/index");
 const sys_constant_2 = require("../../constants/sys.constant");
 const socket_gateway_1 = require("../socket/socket.gateway");
@@ -70,26 +46,6 @@ let UserService = exports.UserService = class UserService {
         const inviteUser = await this.findOneUserByViteCode(userDto.inviteCode);
         if (userDto.inviteCode && !!!inviteUser)
             return new custom_error_1.HttpCustomError({ message: '邀请码错误，请确认' });
-        let stepTs = 1;
-        if (!!!userDto.inviteCode || !!!inviteUser) {
-            initUser.vipTime = (0, index_1.createVipTimestamp)({
-                base: APP_CONFIG.VIPTIME.month_ts
-            });
-            if (!!!inviteUser)
-                initUser.inviteCode = '';
-            return await this.userRepository.save(initUser);
-        }
-        else {
-            stepTs = 2;
-        }
-        const time = (0, index_1.createVipTimestamp)({
-            timestamp: inviteUser.vipTime,
-            base: APP_CONFIG.VIPTIME.month_ts * stepTs
-        });
-        initUser.vipTime = (0, index_1.createVipTimestamp)({
-            base: APP_CONFIG.VIPTIME.month_ts * stepTs
-        });
-        await this.userRepository.update(inviteUser.id, { vipTime: time });
         return await this.userRepository.save(initUser);
     }
     async loginUser(userDto, user) {
@@ -103,15 +59,22 @@ let UserService = exports.UserService = class UserService {
         }
         return { token, email: userDto.email, id };
     }
-    async changePassword(userDto, user) {
+    async logoutUser(email) {
+        const { id } = await this.findOneUserByEmail(email);
+        this.cacheService.delete(`${id}`);
+        return { email };
+    }
+    async changePassword(userDto) {
         const { email, password } = userDto;
+        const user = await this.findOneUserByEmail(email);
+        if (!user)
+            return new custom_error_1.HttpCustomError({ message: '邮箱不存在，请注册！' });
         const { id } = user;
         await this.cacheService.delete(`${id}`);
         const entity = (0, class_transformer_1.plainToClass)(module_1.User, Object.assign(Object.assign({}, user), { password }));
         const result = await this.userRepository.save(entity);
         const token = this.authService.createToken(userDto);
         this.cacheService.set(`${id}`, token, { ttl: 60 * 60 * 24 });
-        console.log('-1-1-1-');
         return { token, email, id };
     }
     async findAllUsers() {
@@ -146,8 +109,12 @@ let UserService = exports.UserService = class UserService {
         });
     }
     async findOneUserByToken(token) {
-        const user = await this.authService.refreshTokenByOldToken(token);
-        return this.findOneUserByEmail(user === null || user === void 0 ? void 0 : user.email);
+        const { email } = await this.authService.refreshTokenByOldToken(token);
+        const user = await this.findOneUserByEmail(email);
+        const hasToken = await this.cacheService.get(`${user === null || user === void 0 ? void 0 : user.id}`);
+        if (!!hasToken)
+            return user;
+        return new custom_error_1.HttpCustomError({ message: '请登录！' });
     }
     async findOneUserByViteCode(code) {
         if (!code)
@@ -158,9 +125,8 @@ let UserService = exports.UserService = class UserService {
             }
         });
     }
-    async sendEmailCode(emailDto) {
+    async sendEmailCode(email) {
         const code = (0, index_1.createRandomStr)();
-        const email = emailDto.email;
         this.cacheService.set(email, code, { ttl: 60 * 30 });
         this.emailService.sendMailAs(sys_constant_2.SEND_EMAIL_CODE, {
             to: email,

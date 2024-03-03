@@ -35,13 +35,18 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       if (!existUser) {
         throw  new HttpUnauthorizedError('用户不存在!');
       }
-
+      
       const cacheToken = await this.cacheService.get(`${existUser.id}`);
+
+      console.log('==cacheToken==',cacheToken,token)
+
+      if(!cacheToken || cacheToken === token){
+        this.cacheService.set(`${existUser.id}`,token,{ ttl:60 * 60 * 24});
+        return existUser;
+      }
+
       if(cacheToken !== token){
         throw new HttpUnauthorizedError('token不正确!');
       }
-      this.cacheService.set(`${existUser.id}`,token,{ ttl:60 * 60 * 24});
-
-      return existUser;
     }
 }

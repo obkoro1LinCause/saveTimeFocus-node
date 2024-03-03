@@ -32,10 +32,10 @@ let UserController = exports.UserController = class UserController {
         return this.userService.loginUser(loginDto, user);
     }
     change(userDto, user) {
-        return this.userService.changePassword(userDto, user);
+        return this.userService.changePassword(userDto);
     }
-    sendEmailCode(email) {
-        return this.userService.sendEmailCode(email);
+    sendEmailCode(emailDto) {
+        return this.userService.sendEmailCode(emailDto.email);
     }
     findUsers() {
         return this.userService.findAllUsers();
@@ -43,9 +43,12 @@ let UserController = exports.UserController = class UserController {
     findUser(userDto) {
         return this.userService.findUser(userDto);
     }
-    findUserByToken(token) {
-        console.log(token, '====token====');
-        return this.userService.findOneUserByToken(token.token);
+    findUserByToken(tokenDto) {
+        return this.userService.findOneUserByToken(tokenDto.token);
+    }
+    ;
+    logout(emailDto) {
+        return this.userService.logoutUser(emailDto.email);
     }
     ;
 };
@@ -68,7 +71,6 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], UserController.prototype, "login", null);
 __decorate([
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Post)('/user_change_password'),
     responser_decorator_1.Responser.handle('post  user_change_password'),
     __param(0, (0, common_1.Body)()),
@@ -103,7 +105,6 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], UserController.prototype, "findUser", null);
 __decorate([
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Get)('/user_by_token'),
     responser_decorator_1.Responser.handle('get user_by_token'),
     __param(0, (0, common_1.Query)()),
@@ -111,6 +112,14 @@ __decorate([
     __metadata("design:paramtypes", [user_dto_1.TokenDto]),
     __metadata("design:returntype", void 0)
 ], UserController.prototype, "findUserByToken", null);
+__decorate([
+    (0, common_1.Get)('/user_logout'),
+    responser_decorator_1.Responser.handle('get user_logout'),
+    __param(0, (0, common_1.Query)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [user_dto_1.EmailDto]),
+    __metadata("design:returntype", void 0)
+], UserController.prototype, "logout", null);
 exports.UserController = UserController = __decorate([
     (0, common_1.Controller)(),
     __metadata("design:paramtypes", [user_service_1.UserService])

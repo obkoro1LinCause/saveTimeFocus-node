@@ -11,7 +11,7 @@ import {
   @Injectable()
   export class ValidationPipe implements PipeTransform<any> {
     async transform(value, metadata: ArgumentMetadata) {
-      const { metatype } = metadata
+      const { metatype } = metadata;
       if (!metatype || !this.toValidate(metatype)) {
         return value
       }
@@ -22,7 +22,7 @@ import {
         errors.forEach((error)=>{
             errorMessage.push(_.values(error.constraints));
         })
-        throw new ValidationError(`Invalid params: ` + errorMessage.join(','))
+        throw new ValidationError(errorMessage.join(','))
       }
       return value;
     }

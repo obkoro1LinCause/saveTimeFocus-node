@@ -9,8 +9,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.HttpExceptionFilter = void 0;
 const common_1 = require("@nestjs/common");
 const response_interface_1 = require("../interfaces/response.interface");
-const value_constant_1 = require("../constants/value.constant");
-const app_environment_1 = require("../app.environment");
 let HttpExceptionFilter = exports.HttpExceptionFilter = class HttpExceptionFilter {
     catch(exception, host) {
         const request = host.switchToHttp().getRequest();
@@ -20,10 +18,9 @@ let HttpExceptionFilter = exports.HttpExceptionFilter = class HttpExceptionFilte
         const errorInfo = errorResponse === null || errorResponse === void 0 ? void 0 : errorResponse.error;
         const data = {
             status: response_interface_1.ResponseStatus.Error,
-            message: errorResponse,
-            error: (errorInfo === null || errorInfo === void 0 ? void 0 : errorInfo.response) || errorInfo,
-            debug: app_environment_1.isDevEnv ? (errorInfo === null || errorInfo === void 0 ? void 0 : errorInfo.stack) || exception.stack : value_constant_1.UNDEFINED,
-            code: exceptionStatus
+            message: (errorResponse === null || errorResponse === void 0 ? void 0 : errorResponse.message) || errorResponse,
+            error: errorInfo,
+            code: exceptionStatus,
         };
         if (exceptionStatus === common_1.HttpStatus.NOT_FOUND) {
             data.error = data.error || `Not found`;

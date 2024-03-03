@@ -20,7 +20,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     if (authInfo && !error && !errInfo) {
       return authInfo;
     } else {
-      throw error || new HttpUnauthorizedError(UNDEFINED, errInfo?.message)
+      throw error || new HttpUnauthorizedError('鉴权失败，无权限/验证异常')
     }
   }
 }

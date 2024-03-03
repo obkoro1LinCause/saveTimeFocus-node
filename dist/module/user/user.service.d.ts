@@ -1,4 +1,4 @@
-import { RegisterDto, BaseDto, EmailDto } from './user.dto';
+import { RegisterDto, BaseDto } from './user.dto';
 import { Repository } from 'typeorm';
 import { User } from '@app/module';
 import { AuthService } from '../auth/auth.service';
@@ -19,16 +19,19 @@ export declare class UserService {
         email: string;
         id: any;
     }>;
-    changePassword(userDto: any, user: any): Promise<{
+    logoutUser(email: any): Promise<{
+        email: any;
+    }>;
+    changePassword(userDto: any): Promise<HttpCustomError | {
         token: string;
         email: any;
-        id: any;
+        id: number;
     }>;
     findAllUsers(): Promise<User[]>;
     findUser(userDto: any): Promise<User>;
     findOneUserByEmail(email: any): Promise<User>;
     findOneUserById(id: any): Promise<User>;
-    findOneUserByToken(token: any): Promise<User>;
+    findOneUserByToken(token: any): Promise<any>;
     findOneUserByViteCode(code: any): Promise<User>;
-    sendEmailCode(emailDto: EmailDto): Promise<void>;
+    sendEmailCode(email: any): Promise<void>;
 }
