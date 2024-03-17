@@ -14,11 +14,9 @@ export type ExceptionInfo = ResponseMessage | {
 export type HttpResponseError = HttpResponseBase & {
     error: any;
     debug?: string;
-    code?: number;
 };
 export type HttpResponseSuccess<T> = HttpResponseBase & {
     params?: any;
     result: T;
-    code?: number;
 };
 export type HttpResponse<T> = HttpResponseError | HttpResponseSuccess<T>;

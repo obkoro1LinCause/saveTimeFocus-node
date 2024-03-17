@@ -1,6 +1,10 @@
 {
-  "name": "cn",
+  "lang":"zh",
+  "name": "中文",
   "age": 3000,
-  "city": "New York"
+  "city": "纽约",
+  "exit":"退出",
+  "life":"管理人生",
+  "invest":"时间投资"
 }
   

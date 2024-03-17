@@ -1,5 +1,9 @@
 {
-    "name": "John Doe",
+    "lang":"en",
+    "name": "英文",
     "age": 30,
-    "city": "New York"
+    "city": "New York",
+    "exit":"exit",
+    "life":"Management life",
+    "invest":"Time investment"
 }

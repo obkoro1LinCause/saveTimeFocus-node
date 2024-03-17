@@ -33,7 +33,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
       const existUser = await this.authService.getUser(user.email);
       if (!existUser) {
-        throw  new HttpUnauthorizedError('用户不存在!');
+          throw new HttpUnauthorizedError('用户不存在');
       }
       
       const cacheToken = await this.cacheService.get(`${existUser.id}`);
@@ -46,7 +46,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       }
 
       if(cacheToken !== token){
-        throw new HttpUnauthorizedError('token不正确!');
+        throw new HttpUnauthorizedError('token不正确');
       }
     }
 }

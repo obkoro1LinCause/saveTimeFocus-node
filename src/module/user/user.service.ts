@@ -11,7 +11,9 @@ import * as APP_CONFIG from '@app/app.config';
 import { createVipTimestamp,createRandomStr} from '@app/utils/index';
 import { SEND_EMAIL_CODE } from '@app/constants/sys.constant'
 import { SocketGateway } from '@app/module/socket/socket.gateway';
-import { HttpCustomError } from '@app/errors/custom.error'
+
+
+
 @Injectable()
 export class UserService {
     constructor(
@@ -25,44 +27,26 @@ export class UserService {
      // 创建用户
     async createUser(userDto:RegisterDto) {
         const bool =  await this.findOneUserByEmail(userDto.email);
-        if(!!bool) return new HttpCustomError({ message: '该邮箱已被注册，请前往登录页面！'})
+        if(!!bool) return Promise.reject('该邮箱已被注册，请前往登录页面');
 
         const emailCode = await this.cacheService.get(userDto.email);
-        if(!emailCode) return new HttpCustomError({ message: '验证码错误，验证码有效期为三十分钟，请重新发送邮箱验证码'});
-        if(emailCode !== userDto.emailCode) return new HttpCustomError({ message: '邮箱验证码错误，请确认'});
+        if(!emailCode) return Promise.reject('验证码错误，验证码有效期为三十分钟，请重新发送邮箱验证码');
+        if(emailCode !== userDto.emailCode)  return Promise.reject('邮箱验证码错误，请确认');
 
         const initUser = plainToClass(User,userDto);
         const inviteUser = await this.findOneUserByViteCode(userDto.inviteCode);
-        if(userDto.inviteCode && !!!inviteUser) return new HttpCustomError({ message:'邀请码错误，请确认'});
+        if(userDto.inviteCode && !!!inviteUser) return Promise.reject('邀请码错误，请确认');
         
         // TODO:vip的时间计算
         // vip的计算规则待补充
-        // let stepTs = 1;
-        // if(!!!userDto.inviteCode || !!!inviteUser){
-        //     initUser.vipTime = createVipTimestamp({
-        //         base:APP_CONFIG.VIPTIME.month_ts
-        //     });
-        //     if(!!!inviteUser) initUser.inviteCode = '';
-        //     return await this.userRepository.save(initUser);
-        // }else{
-        //     stepTs = 2;
-        // }
-        // const time = createVipTimestamp({
-        //     timestamp:inviteUser.vipTime,
-        //     base:APP_CONFIG.VIPTIME.month_ts * stepTs
-        // });
 
-        // initUser.vipTime = createVipTimestamp({
-        //     base:APP_CONFIG.VIPTIME.month_ts * stepTs
-        // });
-        // await this.userRepository.update(inviteUser.id,{ vipTime:time });
         return await this.userRepository.save(initUser);
     }
     
     // 登录
     async loginUser(userDto:BaseDto,user:any){
         const { id } = user;
-        if(!id) return  new HttpCustomError({ message:'登录失败，用户信息错误'});
+        if(!id) return Promise.reject('登录失败，用户信息错误');
         // password 不是加密之后的
         let token = await this.cacheService.get(`${id}`);
         if(!token){
@@ -84,7 +68,7 @@ export class UserService {
         const { email,password } = userDto;
 
         const user = await this.findOneUserByEmail(email);
-        if(!user)  return new HttpCustomError({ message:'邮箱不存在，请注册！'});
+        if(!user)  return Promise.reject('邮箱不存在，请注册');
         const { id } = user;
         await this.cacheService.delete(`${id}`);
         const entity = plainToClass(User, { ...user,password });
@@ -131,7 +115,7 @@ export class UserService {
         const user:any = await this.findOneUserByEmail(email);
         const hasToken = await this.cacheService.get(`${user?.id}`);
         if(!!hasToken) return user;
-        return new HttpCustomError({ message:'请登录！'}); 
+        return  Promise.reject('请登录');
     }
 
     async findOneUserByViteCode(code){

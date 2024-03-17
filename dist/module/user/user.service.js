@@ -24,7 +24,6 @@ const helper_service_email_1 = require("../../processors/helper/helper.service.e
 const index_1 = require("../../utils/index");
 const sys_constant_2 = require("../../constants/sys.constant");
 const socket_gateway_1 = require("../socket/socket.gateway");
-const custom_error_1 = require("../../errors/custom.error");
 let UserService = exports.UserService = class UserService {
     constructor(userRepository, authService, cacheService, emailService, socketGateway) {
         this.userRepository = userRepository;
@@ -36,22 +35,22 @@ let UserService = exports.UserService = class UserService {
     async createUser(userDto) {
         const bool = await this.findOneUserByEmail(userDto.email);
         if (!!bool)
-            return new custom_error_1.HttpCustomError({ message: '该邮箱已被注册，请前往登录页面！' });
+            return Promise.reject('该邮箱已被注册，请前往登录页面');
         const emailCode = await this.cacheService.get(userDto.email);
         if (!emailCode)
-            return new custom_error_1.HttpCustomError({ message: '验证码错误，验证码有效期为三十分钟，请重新发送邮箱验证码' });
+            return Promise.reject('验证码错误，验证码有效期为三十分钟，请重新发送邮箱验证码');
         if (emailCode !== userDto.emailCode)
-            return new custom_error_1.HttpCustomError({ message: '邮箱验证码错误，请确认' });
+            return Promise.reject('邮箱验证码错误，请确认');
         const initUser = (0, class_transformer_1.plainToClass)(module_1.User, userDto);
         const inviteUser = await this.findOneUserByViteCode(userDto.inviteCode);
         if (userDto.inviteCode && !!!inviteUser)
-            return new custom_error_1.HttpCustomError({ message: '邀请码错误，请确认' });
+            return Promise.reject('邀请码错误，请确认');
         return await this.userRepository.save(initUser);
     }
     async loginUser(userDto, user) {
         const { id } = user;
         if (!id)
-            return new custom_error_1.HttpCustomError({ message: '登录失败，用户信息错误' });
+            return Promise.reject('登录失败，用户信息错误');
         let token = await this.cacheService.get(`${id}`);
         if (!token) {
             token = this.authService.createToken(userDto);
@@ -68,7 +67,7 @@ let UserService = exports.UserService = class UserService {
         const { email, password } = userDto;
         const user = await this.findOneUserByEmail(email);
         if (!user)
-            return new custom_error_1.HttpCustomError({ message: '邮箱不存在，请注册！' });
+            return Promise.reject('邮箱不存在，请注册');
         const { id } = user;
         await this.cacheService.delete(`${id}`);
         const entity = (0, class_transformer_1.plainToClass)(module_1.User, Object.assign(Object.assign({}, user), { password }));
@@ -114,7 +113,7 @@ let UserService = exports.UserService = class UserService {
         const hasToken = await this.cacheService.get(`${user === null || user === void 0 ? void 0 : user.id}`);
         if (!!hasToken)
             return user;
-        return new custom_error_1.HttpCustomError({ message: '请登录！' });
+        return Promise.reject('请登录');
     }
     async findOneUserByViteCode(code) {
         if (!code)

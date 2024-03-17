@@ -20,10 +20,10 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
   async validate(email: string, password: string) {
     const user = await this.authService.getUser(email);
     if (!user) {
-        throw new ValidationError('用户名不正确!')
+        throw new ValidationError('用户名不正确')
     }
     if (!compareSync(password, user.password)) {
-        throw new ValidationError('密码错误 !')
+        throw new ValidationError('密码错误');
     }
     return user;
   }

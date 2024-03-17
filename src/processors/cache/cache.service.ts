@@ -40,7 +40,7 @@ export class CacheService {
 
   public retryStrategy(retries: number): number | Error {
     const errorMessage = `retryStrategy! retries: ${retries}`;
-    // redisLog.error(errorMessage)
+    redisLog.error(errorMessage)
     // this.sendAlarmMail(errorMessage)
     if (retries > 6) {
       return new Error("Redis maximum retries!");

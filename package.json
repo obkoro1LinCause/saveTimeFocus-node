@@ -2,7 +2,6 @@
   "name": "nodepress_save_time",
   "private": true,
   "version": "1.0.0",
-  "author": "monnie.huang & koro",
   "description": "save time node",
   "license": "MIT",
   "scripts": {

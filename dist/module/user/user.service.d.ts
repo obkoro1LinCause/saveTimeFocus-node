@@ -5,7 +5,6 @@ import { AuthService } from '../auth/auth.service';
 import { CacheService } from '@app/processors/cache/cache.service';
 import { EmailService } from '@app/processors/helper/helper.service.email';
 import { SocketGateway } from '@app/module/socket/socket.gateway';
-import { HttpCustomError } from '@app/errors/custom.error';
 export declare class UserService {
     private readonly userRepository;
     private readonly authService;
@@ -13,8 +12,8 @@ export declare class UserService {
     private readonly emailService;
     private readonly socketGateway;
     constructor(userRepository: Repository<User>, authService: AuthService, cacheService: CacheService, emailService: EmailService, socketGateway: SocketGateway);
-    createUser(userDto: RegisterDto): Promise<User | HttpCustomError>;
-    loginUser(userDto: BaseDto, user: any): Promise<HttpCustomError | {
+    createUser(userDto: RegisterDto): Promise<User>;
+    loginUser(userDto: BaseDto, user: any): Promise<{
         token: unknown;
         email: string;
         id: any;
@@ -22,7 +21,7 @@ export declare class UserService {
     logoutUser(email: any): Promise<{
         email: any;
     }>;
-    changePassword(userDto: any): Promise<HttpCustomError | {
+    changePassword(userDto: any): Promise<{
         token: string;
         email: any;
         id: number;

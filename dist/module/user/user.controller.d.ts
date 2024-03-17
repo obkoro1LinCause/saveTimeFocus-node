@@ -4,13 +4,13 @@ import { ReqParamsResult } from '@app/decorators/reqParams.decorator';
 export declare class UserController {
     private readonly userService;
     constructor(userService: UserService);
-    register(registerDto: RegisterDto): Promise<import("../../errors/custom.error").HttpCustomError | import("..").User>;
-    login(loginDto: BaseDto, user: ReqParamsResult): Promise<import("../../errors/custom.error").HttpCustomError | {
+    register(registerDto: RegisterDto): Promise<import("..").User>;
+    login(loginDto: BaseDto, user: ReqParamsResult): Promise<{
         token: unknown;
         email: string;
         id: any;
     }>;
-    change(userDto: BaseDto, user: ReqParamsResult): Promise<import("../../errors/custom.error").HttpCustomError | {
+    change(userDto: BaseDto, user: ReqParamsResult): Promise<{
         token: string;
         email: any;
         id: number;

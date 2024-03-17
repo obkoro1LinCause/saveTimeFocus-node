@@ -1,4 +1,4 @@
-import { isString } from 'lodash'
+import lodash from 'lodash'
 import { ExceptionFilter, Catch, HttpException, ArgumentsHost, HttpStatus } from '@nestjs/common'
 import { ResponseStatus, HttpResponseError, ExceptionInfo } from '@app/interfaces/response.interface'
 import { UNDEFINED } from '@app/constants/value.constant'
@@ -20,15 +20,15 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const request = host.switchToHttp().getRequest()
     const response = host.switchToHttp().getResponse()
     const exceptionStatus = exception.getStatus() || HttpStatus.INTERNAL_SERVER_ERROR
-    const errorResponse: any = exception.getResponse() as ExceptionInfo
-    const errorInfo = errorResponse?.error;
+    const errorResponse: any = exception.getResponse() as ExceptionInfo;
+    const errorMessage = lodash.isString(errorResponse) ? errorResponse : errorResponse.message
+    const errorInfo = lodash.isString(errorResponse) ? errorResponse : errorResponse.error;
 
     const data: HttpResponseError = {
       status: ResponseStatus.Error,
-      message: errorResponse?.message || errorResponse,
-      error: errorInfo,
-      code:exceptionStatus,
-      // debug: isDevEnv ? errorInfo?.stack || exception.stack : UNDEFINED,
+      message: errorMessage,
+      error: errorInfo?.message || (lodash.isString(errorInfo) ? errorInfo : JSON.stringify(errorInfo)),
+      debug: isDevEnv ? errorInfo?.stack || exception.stack : UNDEFINED,
     }
 
     // default 404

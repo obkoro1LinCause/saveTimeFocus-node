@@ -9,6 +9,7 @@ import { LocalAuthGuard } from '@app/guards/local.auth.guard';
 import { QueryParams, QueryVisitor } from '@app/decorators/queryparams.decorator';
 import { ReqParams,ReqParamsResult } from '@app/decorators/reqParams.decorator'
 
+
 /**
  * post 接口返回 http status 201
  * get 接口返回 http status 200
@@ -62,16 +63,19 @@ export class UserController {
     return this.userService.findUser(userDto);
   }
 
+  // 通过token获取用户信息
   @Get('/user_by_token')
   @Responser.handle('get user_by_token')
   findUserByToken(@Query() tokenDto:TokenDto){
     return this.userService.findOneUserByToken(tokenDto.token);
   };
 
+  // 注销
   @Get('/user_logout')
   @Responser.handle('get user_logout')
   logout(@Query() emailDto:EmailDto){
     return this.userService.logoutUser(emailDto.email);
   };
-
 }
+
+
