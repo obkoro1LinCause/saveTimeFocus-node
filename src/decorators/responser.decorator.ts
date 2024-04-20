@@ -4,6 +4,12 @@ import { SetMetadata,HttpStatus } from '@nestjs/common'
 import * as TEXT from '@app/constants/text.constant'
 import { UNDEFINED } from '@app/constants/value.constant'
 import lodash from 'lodash';
+import {
+    META_ERROR_CODE,
+    META_SUCCESS_CODE,
+    META_ERROR_MSG,
+    META_SUCCESS_MSG
+} from '@app/constants/meta.constant'
 
 import { ResponseMessage } from '@app/interfaces/response.interface'
 
@@ -20,10 +26,10 @@ type HandleOptionConfig = ResponseMessage | HandleOption
 // 获取元数据
 export const getResponserOptions = (target:any)=>{
     return {
-        errorCode:reflector.get('errorCode',target),
-        successCode:reflector.get('successCode',target),
-        errorMsg:reflector.get('errorMsg',target),
-        successMsg:reflector.get('successMsg',target),
+        errorCode:reflector.get(META_ERROR_CODE,target),
+        successCode:reflector.get(META_SUCCESS_CODE,target),
+        errorMsg:reflector.get(META_ERROR_MSG,target),
+        successMsg:reflector.get(META_SUCCESS_MSG,target),
         transform:reflector.get('transform',target)
     }
 };
@@ -34,16 +40,16 @@ const createDecorator = (params:any)=>{
 
         SetMetadata('transform',true)(decorator.value);
         if(errorCode){
-            SetMetadata('errorCode',errorCode)(decorator.value)
+            SetMetadata(META_ERROR_CODE,errorCode)(decorator.value)
         }
         if(successCode){
-            SetMetadata('successCode',successCode)(decorator.value)
+            SetMetadata(META_SUCCESS_CODE,successCode)(decorator.value)
         }
         if(errorMsg){
-            SetMetadata('errorMsg',errorMsg)(decorator.value)
+            SetMetadata(META_ERROR_MSG,errorMsg)(decorator.value)
         }
         if(successMsg){
-            SetMetadata('successMsg',successMsg)(decorator.value)
+            SetMetadata(META_SUCCESS_MSG,successMsg)(decorator.value)
         }
         return decorator;
     }
@@ -57,7 +63,7 @@ export const handle = (...args)=>{
     const errorCode = isOption(option) ? option.error : UNDEFINED;
     const successCode = isOption(option) ? option.success : UNDEFINED
     const errorMsg = isOption(option) ? option.message + TEXT.HTTP_ERROR_SUFFIX : option + TEXT.HTTP_ERROR_SUFFIX;
-    const successMsg = isOption(option) ? option.message +TEXT.HTTP_SUCCESS_SUFFIX :option + TEXT.HTTP_SUCCESS_SUFFIX;
+    const successMsg = isOption(option) ? option.message + TEXT.HTTP_SUCCESS_SUFFIX : option + TEXT.HTTP_SUCCESS_SUFFIX;
     return createDecorator({
         errorCode,
         successCode,

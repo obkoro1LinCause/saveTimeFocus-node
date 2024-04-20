@@ -8,19 +8,36 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserModule = void 0;
 const common_1 = require("@nestjs/common");
-const user_controller_1 = require("./user.controller");
-const user_service_1 = require("./user.service");
-const auth_module_1 = require("../auth/auth.module");
 const module_1 = require("..");
 const socket_module_1 = require("../socket/socket.module");
+const local_strategy_1 = require("../auth/local.strategy");
+const jwt_strategy_1 = require("../auth/jwt.strategy");
+const auth_service_1 = require("../auth/auth.service");
+const jwt_1 = require("@nestjs/jwt");
+const passport_1 = require("@nestjs/passport");
+const user_controller_1 = require("./user.controller");
+const user_service_1 = require("./user.service");
+const app_config_1 = require("../../app.config");
 let UserModule = exports.UserModule = class UserModule {
 };
 exports.UserModule = UserModule = __decorate([
     (0, common_1.Module)({
+        imports: [
+            passport_1.PassportModule,
+            jwt_1.JwtModule.register({
+                secret: app_config_1.JWT_CONFIG.secret,
+            }),
+            socket_module_1.SocketModule
+        ],
         controllers: [user_controller_1.UserController],
-        providers: [user_service_1.UserService, module_1.UserProvider],
+        providers: [
+            user_service_1.UserService,
+            module_1.UserProvider,
+            jwt_strategy_1.JwtStrategy,
+            local_strategy_1.LocalStrategy,
+            auth_service_1.AuthService
+        ],
         exports: [user_service_1.UserService],
-        imports: [auth_module_1.AuthModule, socket_module_1.SocketModule]
     })
 ], UserModule);
 //# sourceMappingURL=user.module.js.map

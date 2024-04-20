@@ -20,7 +20,7 @@ export const PROJECT = {
 
 // 自己网站域名可以访问
 export const CROSS_DOMAIN = {
-    allowedOrigins: ['', '', ''],
+    allowedOrigins: ['http://localhost:8010'],
     allowedReferer: '',
 }
 

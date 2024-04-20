@@ -1,6 +1,6 @@
 import { Module,NestModule,MiddlewareConsumer } from '@nestjs/common'
 import { AppController } from './app.controller';
-import { APP_PIPE } from '@nestjs/core'
+import { APP_PIPE,APP_GUARD } from '@nestjs/core'
 
 // universal modules
 import { DatabaseModule } from '@app/processors/database/mysql.module';
@@ -8,23 +8,40 @@ import { CacheModule } from '@app/processors/cache/cache.module';
 import { HelperModule } from '@app/processors/helper/helper.module';
 // framework
 import { ValidationPipe } from '@app/pipes/validation.pipe';
+import { ThrottlerModule, ThrottlerGuard,minutes } from '@nestjs/throttler';
 
 // middleware
 import { CorsMiddleware } from '@app/middlewares/cors.middleware'
 import { OriginMiddleware } from '@app/middlewares/origin.middleware'
 
 // biz modules
-import { AuthModule } from './module/auth/auth.module';
-import { UserModule } from './module/user/user.module';
-import { SocketModule } from './module/socket/socket.module';
+import { SocketModule } from '@app/module/socket/socket.module';
+import { UserModule } from '@app/module/user/user.module';
+import { BlockModule } from '@app/module/block/block.module';
 
 @Module({
-  imports: [DatabaseModule,CacheModule,HelperModule,AuthModule,UserModule, SocketModule],
+  imports: [
+    ThrottlerModule.forRoot([{
+      ttl: minutes(5),  //5 minutes = 300s
+      limit: 300,   //请求300次
+      ignoreUserAgents: []
+    }]),
+    DatabaseModule,
+    CacheModule,
+    HelperModule,
+    SocketModule,
+    UserModule, 
+    BlockModule
+  ],
   controllers: [AppController],
   providers: [
     {
       provide: APP_PIPE,
       useClass: ValidationPipe,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
     },
   ],
 })

@@ -32,12 +32,13 @@ const common_1 = require("@nestjs/common");
 const TEXT = __importStar(require("../constants/text.constant"));
 const value_constant_1 = require("../constants/value.constant");
 const lodash_1 = __importDefault(require("lodash"));
+const meta_constant_1 = require("../constants/meta.constant");
 const getResponserOptions = (target) => {
     return {
-        errorCode: reflector_constant_1.reflector.get('errorCode', target),
-        successCode: reflector_constant_1.reflector.get('successCode', target),
-        errorMsg: reflector_constant_1.reflector.get('errorMsg', target),
-        successMsg: reflector_constant_1.reflector.get('successMsg', target),
+        errorCode: reflector_constant_1.reflector.get(meta_constant_1.META_ERROR_CODE, target),
+        successCode: reflector_constant_1.reflector.get(meta_constant_1.META_SUCCESS_CODE, target),
+        errorMsg: reflector_constant_1.reflector.get(meta_constant_1.META_ERROR_MSG, target),
+        successMsg: reflector_constant_1.reflector.get(meta_constant_1.META_SUCCESS_MSG, target),
         transform: reflector_constant_1.reflector.get('transform', target)
     };
 };
@@ -47,16 +48,16 @@ const createDecorator = (params) => {
     return (_, __, decorator) => {
         (0, common_1.SetMetadata)('transform', true)(decorator.value);
         if (errorCode) {
-            (0, common_1.SetMetadata)('errorCode', errorCode)(decorator.value);
+            (0, common_1.SetMetadata)(meta_constant_1.META_ERROR_CODE, errorCode)(decorator.value);
         }
         if (successCode) {
-            (0, common_1.SetMetadata)('successCode', successCode)(decorator.value);
+            (0, common_1.SetMetadata)(meta_constant_1.META_SUCCESS_CODE, successCode)(decorator.value);
         }
         if (errorMsg) {
-            (0, common_1.SetMetadata)('errorMsg', errorMsg)(decorator.value);
+            (0, common_1.SetMetadata)(meta_constant_1.META_ERROR_MSG, errorMsg)(decorator.value);
         }
         if (successMsg) {
-            (0, common_1.SetMetadata)('successMsg', successMsg)(decorator.value);
+            (0, common_1.SetMetadata)(meta_constant_1.META_SUCCESS_MSG, successMsg)(decorator.value);
         }
         return decorator;
     };

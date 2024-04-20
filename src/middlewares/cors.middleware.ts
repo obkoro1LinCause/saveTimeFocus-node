@@ -39,7 +39,7 @@ export class CorsMiddleware implements NestMiddleware {
 
     // Allow Origin
     if (!origin || allowedOrigins.includes(origin) || isDevEnv) {
-      res.setHeader('Access-Control-Allow-Origin', origin || '*')
+      res.setHeader('Access-Control-Allow-Origin', origin || '*') // 解决跨域请求核心
     }
      // Headers
      res.header('Access-Control-Allow-Credentials', 'true')

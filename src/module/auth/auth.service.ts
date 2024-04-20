@@ -1,31 +1,23 @@
-import { Injectable,Inject } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { DB_USER_TOKEN } from '@app/constants/sys.constant';
-import { Repository } from 'typeorm';
-import { User } from '@app/module';
 
 @Injectable()
 export class AuthService {
-    constructor(
-        private readonly jwtService: JwtService,
-        @Inject(DB_USER_TOKEN) private readonly userRepository:Repository<User>,
-      ) {}
-
-    createToken(user) {
+    constructor(private readonly jwtService: JwtService) {}
+    // 生成token
+    createToken(user):string {
         const payload = { ...user };
         return this.jwtService.sign(payload);
     }
-
-    refreshTokenByOldToken(token:string){
-        const user = this.jwtService.decode(token);
+    // token => user 
+    async refreshTokenByOldToken(token:string):Promise<any>{
+        const user = await this.jwtService.decode(token);
         return user;
     }
-    
-    async getUser(email: string){
-        return await this.userRepository
-        .createQueryBuilder('user')
-        .addSelect('user.password')
-        .where('user.email=:email', { email })
-        .getOne();
+    // check token
+    async checkToken(token: string): Promise<any> {
+        const decode = await this.jwtService.verifyAsync(token);
+        return decode;
     }
 }

@@ -19,36 +19,33 @@ const responser_decorator_1 = require("../../decorators/responser.decorator");
 const user_service_1 = require("./user.service");
 const jwt_auth_guard_1 = require("../../guards/jwt.auth.guard");
 const local_auth_guard_1 = require("../../guards/local.auth.guard");
-const reqParams_decorator_1 = require("../../decorators/reqParams.decorator");
+const reqparams_decorator_1 = require("../../decorators/reqparams.decorator");
 let UserController = exports.UserController = class UserController {
     constructor(userService) {
         this.userService = userService;
     }
     ;
-    register(registerDto) {
-        return this.userService.createUser(registerDto);
+    register(user) {
+        return this.userService.createUser(user);
     }
-    login(loginDto, user) {
-        return this.userService.loginUser(loginDto, user);
+    change(user) {
+        return this.userService.changePassword(user);
     }
-    change(userDto, user) {
-        return this.userService.changePassword(userDto);
+    login(user, { id }) {
+        return this.userService.loginUser(user, id);
     }
-    sendEmailCode(emailDto) {
-        return this.userService.sendEmailCode(emailDto.email);
+    sendEmailCode({ email }) {
+        return this.userService.sendEmailCode(email);
     }
     findUsers() {
         return this.userService.findAllUsers();
     }
-    findUser(userDto) {
-        return this.userService.findUser(userDto);
+    getCurrentUser(user) {
+        return user;
     }
-    findUserByToken(tokenDto) {
-        return this.userService.findOneUserByToken(tokenDto.token);
-    }
-    ;
-    logout(emailDto) {
-        return this.userService.logoutUser(emailDto.email);
+    logout(user) {
+        const { email, id } = user;
+        return this.userService.logoutUser(id);
     }
     ;
 };
@@ -57,34 +54,33 @@ __decorate([
     responser_decorator_1.Responser.handle('post  register_user'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [user_dto_1.RegisterDto]),
+    __metadata("design:paramtypes", [user_dto_1.RegisterDTO]),
     __metadata("design:returntype", void 0)
 ], UserController.prototype, "register", null);
+__decorate([
+    (0, common_1.Post)('/change_password'),
+    responser_decorator_1.Responser.handle('post change_password'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [user_dto_1.UserInfoDTO]),
+    __metadata("design:returntype", void 0)
+], UserController.prototype, "change", null);
 __decorate([
     (0, common_1.UseGuards)(local_auth_guard_1.LocalAuthGuard),
     (0, common_1.Post)('/user_login'),
     responser_decorator_1.Responser.handle('post login'),
     __param(0, (0, common_1.Body)()),
-    __param(1, (0, reqParams_decorator_1.ReqParams)('user')),
+    __param(1, (0, reqparams_decorator_1.ReqParams)('user')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [user_dto_1.BaseDto, Object]),
+    __metadata("design:paramtypes", [user_dto_1.UserInfoDTO, Object]),
     __metadata("design:returntype", void 0)
 ], UserController.prototype, "login", null);
 __decorate([
-    (0, common_1.Post)('/user_change_password'),
-    responser_decorator_1.Responser.handle('post  user_change_password'),
-    __param(0, (0, common_1.Body)()),
-    __param(1, (0, reqParams_decorator_1.ReqParams)('user')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [user_dto_1.BaseDto, Object]),
-    __metadata("design:returntype", void 0)
-], UserController.prototype, "change", null);
-__decorate([
-    (0, common_1.Get)('/user_email_code'),
-    responser_decorator_1.Responser.handle('get user_email_code'),
+    (0, common_1.Get)('/email_code'),
+    responser_decorator_1.Responser.handle('get email_code'),
     __param(0, (0, common_1.Query)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [user_dto_1.EmailDto]),
+    __metadata("design:paramtypes", [user_dto_1.EmailDTO]),
     __metadata("design:returntype", void 0)
 ], UserController.prototype, "sendEmailCode", null);
 __decorate([
@@ -97,27 +93,20 @@ __decorate([
 ], UserController.prototype, "findUsers", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
-    (0, common_1.Post)('/user'),
-    responser_decorator_1.Responser.handle('post user'),
-    __param(0, (0, common_1.Body)()),
+    (0, common_1.Get)('/current_user'),
+    responser_decorator_1.Responser.handle('get current_user'),
+    __param(0, (0, reqparams_decorator_1.ReqParams)('user')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [user_dto_1.UserDto]),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
-], UserController.prototype, "findUser", null);
+], UserController.prototype, "getCurrentUser", null);
 __decorate([
-    (0, common_1.Get)('/user_by_token'),
-    responser_decorator_1.Responser.handle('get user_by_token'),
-    __param(0, (0, common_1.Query)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [user_dto_1.TokenDto]),
-    __metadata("design:returntype", void 0)
-], UserController.prototype, "findUserByToken", null);
-__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Get)('/user_logout'),
     responser_decorator_1.Responser.handle('get user_logout'),
-    __param(0, (0, common_1.Query)()),
+    __param(0, (0, reqparams_decorator_1.ReqParams)('user')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [user_dto_1.EmailDto]),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], UserController.prototype, "logout", null);
 exports.UserController = UserController = __decorate([

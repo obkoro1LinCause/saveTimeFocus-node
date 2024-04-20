@@ -31,3 +31,24 @@ nest g resource [xxx]
     - Nest提供了通过@SetMetadata(key, value)装饰器为route handler添加自定义元数据的方法
     - 通过Reflection获取
   
+
+
+  - typeorm
+  - 多对多 https://www.cnblogs.com/terrylin/p/11283896.html 
+    @JoinTable适用于ManyToMany
+    - 单向
+      @ManyToMany(()=>User,...)
+    - 双向
+      @ManyToMany(()=>User,...,{ cascade :true})
+      @JoinTable({
+        name:'user_block',
+        joinColumns: [
+          { name: 'userId' }
+        ],
+        inverseJoinColumns: [
+          { name: 'blockId' }
+        ]
+      })
+
+
+      

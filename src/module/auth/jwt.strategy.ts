@@ -1,17 +1,17 @@
+import { Injectable } from '@nestjs/common';
+import { HttpUnauthorizedError } from '@app/errors/unauthorized.error';
+import { JWT_CONFIG } from '@app/app.config';
+import { UNDEFINED } from '@app/constants/value.constant';
+import { UserService } from '@app/module/user/user.service';
+import { CacheService } from '@app/processors/cache/cache.service';
 import { ExtractJwt, Strategy,StrategyOptions } from 'passport-jwt';
 import { PassportStrategy} from '@nestjs/passport';
-import { Injectable,Inject } from '@nestjs/common';
-import { CacheService } from '@app/processors/cache/cache.service';
-import { HttpUnauthorizedError } from '@app/errors/unauthorized.error';
-import { AuthService } from '@app/module/auth/auth.service';
-import { JWT_CONFIG } from '@app/app.config';
-
-
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
     constructor(
       private readonly cacheService: CacheService,
-      private readonly authService: AuthService,
+      private readonly userService: UserService
+
     ) {
         super({
           	// 如何提取令牌
@@ -24,29 +24,37 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         } as StrategyOptions);
     }
 
-
-    // 该方法参数表示通过守卫后解析token得到的内容，返回值将传入控制器方法参数
+    // 授权 校验策略
+    // 该方法参数表示通过守卫后解析 token 得到的内容，返回值将传入控制器方法参数
     async validate(req:any,payload: any) {
-       // token 解密来的字段
       const user = { ...payload };
       const token = ExtractJwt.fromAuthHeaderAsBearerToken()(req);
-
-      const existUser = await this.authService.getUser(user.email);
+      const originalUrl = req.url;
+      const existUser = await this.userService.findUserByField(user.email,'email');
       if (!existUser) {
-          throw new HttpUnauthorizedError('用户不存在');
+          throw new HttpUnauthorizedError('noUserERR');
       }
       
       const cacheToken = await this.cacheService.get(`${existUser.id}`);
 
-      console.log('==cacheToken==',cacheToken,token)
-
-      if(!cacheToken || cacheToken === token){
-        this.cacheService.set(`${existUser.id}`,token,{ ttl:60 * 60 * 24});
+      console.log('==cacheToken==',cacheToken,token,req.url);
+      if(originalUrl.includes('user_logout')){
+        if(cacheToken !== token){
+          throw new HttpUnauthorizedError('noTokenERR');
+        }
         return existUser;
-      }
-
-      if(cacheToken !== token){
-        throw new HttpUnauthorizedError('token不正确');
+      }else{
+        if(cacheToken === token){
+          this.cacheService.set(`${existUser.id}`,token,{ ttl:60 * 60 * 24});
+          return existUser;
+        }
+        // if(!cacheToken){
+        //   // 无限登录态
+        //   // this.cacheService.set(`${existUser.id}`,token,{ ttl:60 * 60 * 24});
+        //   // return existUser;
+        // }
+        // 登录过期
+        throw new HttpUnauthorizedError(UNDEFINED,'noTokenERR');
       }
     }
 }

@@ -14,11 +14,12 @@ const mysql_module_1 = require("./processors/database/mysql.module");
 const cache_module_1 = require("./processors/cache/cache.module");
 const helper_module_1 = require("./processors/helper/helper.module");
 const validation_pipe_1 = require("./pipes/validation.pipe");
+const throttler_1 = require("@nestjs/throttler");
 const cors_middleware_1 = require("./middlewares/cors.middleware");
 const origin_middleware_1 = require("./middlewares/origin.middleware");
-const auth_module_1 = require("./module/auth/auth.module");
-const user_module_1 = require("./module/user/user.module");
 const socket_module_1 = require("./module/socket/socket.module");
+const user_module_1 = require("./module/user/user.module");
+const block_module_1 = require("./module/block/block.module");
 let AppModule = exports.AppModule = class AppModule {
     configure(consumer) {
         consumer.apply(cors_middleware_1.CorsMiddleware, origin_middleware_1.OriginMiddleware).forRoutes('*');
@@ -26,12 +27,28 @@ let AppModule = exports.AppModule = class AppModule {
 };
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
-        imports: [mysql_module_1.DatabaseModule, cache_module_1.CacheModule, helper_module_1.HelperModule, auth_module_1.AuthModule, user_module_1.UserModule, socket_module_1.SocketModule],
+        imports: [
+            throttler_1.ThrottlerModule.forRoot([{
+                    ttl: (0, throttler_1.minutes)(5),
+                    limit: 300,
+                    ignoreUserAgents: []
+                }]),
+            mysql_module_1.DatabaseModule,
+            cache_module_1.CacheModule,
+            helper_module_1.HelperModule,
+            socket_module_1.SocketModule,
+            user_module_1.UserModule,
+            block_module_1.BlockModule
+        ],
         controllers: [app_controller_1.AppController],
         providers: [
             {
                 provide: core_1.APP_PIPE,
                 useClass: validation_pipe_1.ValidationPipe,
+            },
+            {
+                provide: core_1.APP_GUARD,
+                useClass: throttler_1.ThrottlerGuard,
             },
         ],
     })

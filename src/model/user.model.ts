@@ -1,9 +1,10 @@
-import { Entity, Column,PrimaryGeneratedColumn,CreateDateColumn,BeforeInsert,BeforeUpdate,UpdateDateColumn } from 'typeorm';
+import { Entity, Column,PrimaryGeneratedColumn,CreateDateColumn,BeforeInsert,BeforeUpdate,UpdateDateColumn,ManyToMany,JoinTable,OneToMany
+ } from 'typeorm';
 import { getProviderByModelClass } from '@app/transformers/model.transformer';
 import { DB_USER_TOKEN } from '@app/constants/sys.constant'
-import { createHashStr,createRandomStr } from '@app/utils';
-import { Exclude } from "class-transformer";
+import { Block } from './block.model';
 
+// 用户表
 @Entity('user')
 export class User{
 
@@ -17,7 +18,6 @@ export class User{
   })
   email: string;
 
-  
   @Column('varchar',{
     comment:'密码',
     name:'password',
@@ -30,18 +30,20 @@ export class User{
   @Column('varchar',{
     comment:'自己的邀请码',
     name:'selfInviteCode',
-    unique: true
+    nullable: true,
   })
   selfInviteCode: string | null;
 
   @Column('varchar',{
     comment:'邀请码',
     name:'inviteCode',
+    nullable: true,
   })
   inviteCode:string | null
 
   @Column('varchar',{
     comment:'邮箱验证码',
+    nullable: false,
     name:'emailCode'
   })
   emailCode:string
@@ -60,10 +62,9 @@ export class User{
   })
   isVip:boolean
 
-  @Column("simple-json",{
-    nullable: true,
-  })
-  equipmentInfo: { has_evaluate: number,type: string }
+  // 无中间实体表的配置
+  @OneToMany(type=>Block,block=>block.users,{ createForeignKeyConstraints: false })
+  blocks: Block[];
 
   //自动生成列
   @CreateDateColumn({  
@@ -82,19 +83,6 @@ export class User{
   })
   updateAt: Date;
 
-  // 密码加密入库；1.数据插入前, 2.数据库中无该数据 3.数据更新
-  @BeforeInsert() 
-  @BeforeUpdate()
-  md5Pwd() { 
-    if (!this.password) return;
-    this.password = createHashStr(this.password);
-  } 
-
-  // 注册自动生成随机邀请码；1.数据插入前, 2.数据库中无该数据
-  @BeforeInsert()
-  randSelfCode(){
-    this.selfInviteCode = createRandomStr();
-  }
 };
 
 export const UserProvider = getProviderByModelClass(DB_USER_TOKEN,User);

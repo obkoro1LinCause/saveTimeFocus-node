@@ -32,96 +32,52 @@ let UserService = exports.UserService = class UserService {
         this.emailService = emailService;
         this.socketGateway = socketGateway;
     }
-    async createUser(userDto) {
-        const bool = await this.findOneUserByEmail(userDto.email);
+    async createUser(user) {
+        const { email, inviteCode } = user;
+        const bool = await this.findUserByField(email, 'email');
         if (!!bool)
-            return Promise.reject('该邮箱已被注册，请前往登录页面');
-        const emailCode = await this.cacheService.get(userDto.email);
-        if (!emailCode)
-            return Promise.reject('验证码错误，验证码有效期为三十分钟，请重新发送邮箱验证码');
-        if (emailCode !== userDto.emailCode)
-            return Promise.reject('邮箱验证码错误，请确认');
-        const initUser = (0, class_transformer_1.plainToClass)(module_1.User, userDto);
-        const inviteUser = await this.findOneUserByViteCode(userDto.inviteCode);
-        if (userDto.inviteCode && !!!inviteUser)
-            return Promise.reject('邀请码错误，请确认');
+            return Promise.reject('createdERR');
+        const cacheEmailCode = await this.cacheService.get(email);
+        if (!cacheEmailCode || cacheEmailCode !== user.emailCode)
+            return Promise.reject('emailCodeERR');
+        const initUser = (0, class_transformer_1.plainToClass)(module_1.User, Object.assign(Object.assign({}, user), { password: (0, index_1.createHashStr)(user.password), selfInviteCode: (0, index_1.createRandomStr)() }));
+        const inviteIns = await this.findUserByField(inviteCode, 'selfInviteCode');
+        if (inviteCode && !!!inviteIns)
+            return Promise.reject('inviteERR');
         return await this.userRepository.save(initUser);
     }
-    async loginUser(userDto, user) {
-        const { id } = user;
-        if (!id)
-            return Promise.reject('登录失败，用户信息错误');
+    async loginUser(user, id) {
         let token = await this.cacheService.get(`${id}`);
         if (!token) {
-            token = this.authService.createToken(userDto);
+            token = this.authService.createToken(user);
             this.cacheService.set(`${id}`, token, { ttl: 60 * 60 * 24 });
         }
-        return { token, email: userDto.email, id };
+        return { token, email: user.email, id };
     }
-    async logoutUser(email) {
-        const { id } = await this.findOneUserByEmail(email);
+    async logoutUser(id) {
         this.cacheService.delete(`${id}`);
-        return { email };
+        return null;
     }
-    async changePassword(userDto) {
-        const { email, password } = userDto;
-        const user = await this.findOneUserByEmail(email);
-        if (!user)
-            return Promise.reject('邮箱不存在，请注册');
-        const { id } = user;
-        await this.cacheService.delete(`${id}`);
-        const entity = (0, class_transformer_1.plainToClass)(module_1.User, Object.assign(Object.assign({}, user), { password }));
-        const result = await this.userRepository.save(entity);
-        const token = this.authService.createToken(userDto);
-        this.cacheService.set(`${id}`, token, { ttl: 60 * 60 * 24 });
-        return { token, email, id };
+    async changePassword(user) {
+        const { email, password } = user;
+        const userIns = await this.findUserByField(email, 'email');
+        if (!userIns)
+            return Promise.reject('emailERR');
+        await this.userRepository.createQueryBuilder()
+            .update(module_1.User).set({ password: (0, index_1.createHashStr)(user.password) })
+            .where("email = :email", { email }).execute();
+        return { email };
     }
     async findAllUsers() {
         return await this.userRepository.find();
     }
-    async findUser(userDto) {
-        if (!(userDto === null || userDto === void 0 ? void 0 : userDto.id) && !(userDto === null || userDto === void 0 ? void 0 : userDto.email))
-            return null;
-        if (userDto === null || userDto === void 0 ? void 0 : userDto.email) {
-            return await this.findOneUserByEmail(userDto === null || userDto === void 0 ? void 0 : userDto.email);
-        }
-        else {
-            return await this.findOneUserById(userDto === null || userDto === void 0 ? void 0 : userDto.id);
-        }
-    }
-    async findOneUserByEmail(email) {
-        if (!email)
+    async findUserByField(value, field) {
+        if (!value)
             return null;
         return await this.userRepository.findOne({
             where: {
-                email
-            }
-        });
-    }
-    async findOneUserById(id) {
-        if (!id)
-            return null;
-        return await this.userRepository.findOne({
-            where: {
-                id
-            }
-        });
-    }
-    async findOneUserByToken(token) {
-        const { email } = await this.authService.refreshTokenByOldToken(token);
-        const user = await this.findOneUserByEmail(email);
-        const hasToken = await this.cacheService.get(`${user === null || user === void 0 ? void 0 : user.id}`);
-        if (!!hasToken)
-            return user;
-        return Promise.reject('请登录');
-    }
-    async findOneUserByViteCode(code) {
-        if (!code)
-            return null;
-        return await this.userRepository.findOne({
-            where: {
-                selfInviteCode: code
-            }
+                [field]: value,
+            },
         });
     }
     async sendEmailCode(email) {
@@ -129,11 +85,11 @@ let UserService = exports.UserService = class UserService {
         this.cacheService.set(email, code, { ttl: 60 * 30 });
         this.emailService.sendMailAs(sys_constant_2.SEND_EMAIL_CODE, {
             to: email,
-            subject: '获取注册验证码',
+            subject: "获取注册验证码",
             text: `验证码为${code}`,
             html: `<p>您好！</p>
                 <p>您的验证码是：<strong style="color:orangered;">验证码为${code}</strong></p>
-                <p>如果不是您本人操作，请无视此邮件</p>`
+                <p>如果不是您本人操作，请无视此邮件</p>`,
         });
     }
 };

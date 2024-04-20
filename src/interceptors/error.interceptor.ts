@@ -18,9 +18,10 @@ export class ErrorInterceptor implements NestInterceptor {
     const { errorCode, errorMsg } = getResponserOptions(target);
 
     return next.handle().pipe(
+      // 捕获 controller 错误
       catchError((error) => {
         return throwError(
-          () =>new HttpCustomError({ message:errorMsg || TEXT.HTTP_DEFAULT_ERROR_TEXT,error},errorCode)
+          () =>new HttpCustomError({ message:errorMsg || TEXT.HTTP_DEFAULT_ERROR_TEXT,error },errorCode)
         )
       })
     )

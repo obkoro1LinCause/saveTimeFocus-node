@@ -2,33 +2,46 @@ import lodash from 'lodash'
 import { ExceptionFilter, Catch, HttpException, ArgumentsHost, HttpStatus } from '@nestjs/common'
 import { ResponseStatus, HttpResponseError, ExceptionInfo } from '@app/interfaces/response.interface'
 import { UNDEFINED } from '@app/constants/value.constant'
-import { isDevEnv } from '@app/app.environment'
+import { isDevEnv } from '@app/app.environment';
+import { EN_US,ZH_CN } from '@app/constants/language.constant';
 
 
 /**
  * 
  * @class HttpExceptionFilter
- * @classdesc 全局捕获每个未处理的异常, HttpErrorResponse
-  error :  "1"
-  message : "App_Info api failed"
-  status: "error"
+ * @classdesc globally exceptions & formatting error message to <HttpErrorResponse>
+ * {
+ *  status: error 
+ *  message:'接口错误返回原因',
+ *  error:reject reason
+ * }
  */
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
   catch(exception: HttpException, host: ArgumentsHost) {
-
-    const request = host.switchToHttp().getRequest()
-    const response = host.switchToHttp().getResponse()
+    
+    const request = host.switchToHttp().getRequest();
+    const response = host.switchToHttp().getResponse();
     const exceptionStatus = exception.getStatus() || HttpStatus.INTERNAL_SERVER_ERROR
-    const errorResponse: any = exception.getResponse() as ExceptionInfo;
-    const errorMessage = lodash.isString(errorResponse) ? errorResponse : errorResponse.message
-    const errorInfo = lodash.isString(errorResponse) ? errorResponse : errorResponse.error;
+    const errRes:any = exception.getResponse() as ExceptionInfo;
+    const lang = request.headers['x-lang-mark'] as string;
+
+    let errMsg;
+    let errorInfo;
+    if(lodash.isString(errRes) || lodash.isString(errRes?.error)){
+      const errKey = errRes?.error || errRes;
+      errMsg = errRes?.message || 'API Error';
+      errorInfo = lang == 'zh' ? ZH_CN?.[errKey] : EN_US?.[errKey];
+    } else if(!lodash.isString(errRes?.error)){
+      errorInfo = errRes?.error?.response;
+      errMsg = errRes?.message;
+    }
 
     const data: HttpResponseError = {
       status: ResponseStatus.Error,
-      message: errorMessage,
-      error: errorInfo?.message || (lodash.isString(errorInfo) ? errorInfo : JSON.stringify(errorInfo)),
-      debug: isDevEnv ? errorInfo?.stack || exception.stack : UNDEFINED,
+      message: errMsg,
+      error: errorInfo,
+      debug: isDevEnv ? errRes?.error?.stack || exception.stack : UNDEFINED,
     }
 
     // default 404
@@ -37,6 +50,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
       data.message = data.message || `Invalid API: ${request.method} > ${request.url}`
     }
 
-    return response.status(errorInfo?.status || exceptionStatus).jsonp(data)
+    return response.status(errRes?.error?.status || exceptionStatus).jsonp(data)
   }
 }

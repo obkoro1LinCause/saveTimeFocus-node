@@ -16,7 +16,7 @@ exports.PROJECT = {
     description: packageJSON.description
 };
 exports.CROSS_DOMAIN = {
-    allowedOrigins: ['', '', ''],
+    allowedOrigins: ['http://localhost:8010'],
     allowedReferer: '',
 };
 exports.JWT_CONFIG = {

@@ -12,15 +12,15 @@ import { UNDEFINED } from '@app/constants/value.constant'
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
   canActivate(context: ExecutionContext) {
+    const request = context.switchToHttp().getRequest();
     return super.canActivate(context)
   }
 
   handleRequest(error, authInfo, errInfo) {
-
     if (authInfo && !error && !errInfo) {
       return authInfo;
     } else {
-      throw error || new HttpUnauthorizedError('鉴权失败，无权限/验证异常')
+      throw error || new HttpUnauthorizedError(UNDEFINED,'unauthERR')
     }
   }
 }

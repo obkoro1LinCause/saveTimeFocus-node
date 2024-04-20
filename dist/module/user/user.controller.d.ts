@@ -1,25 +1,20 @@
-import { RegisterDto, BaseDto, EmailDto, UserDto, TokenDto } from './user.dto';
+import { UserInfoDTO, RegisterDTO, EmailDTO } from '@app/module/user/user.dto';
 import { UserService } from './user.service';
-import { ReqParamsResult } from '@app/decorators/reqParams.decorator';
+import { type User } from '@app/decorators/reqparams.decorator';
 export declare class UserController {
     private readonly userService;
     constructor(userService: UserService);
-    register(registerDto: RegisterDto): Promise<import("..").User>;
-    login(loginDto: BaseDto, user: ReqParamsResult): Promise<{
+    register(user: RegisterDTO): Promise<import("..").User>;
+    change(user: UserInfoDTO): Promise<{
+        email: any;
+    }>;
+    login(user: UserInfoDTO, { id }: User): Promise<{
         token: unknown;
-        email: string;
+        email: any;
         id: any;
     }>;
-    change(userDto: BaseDto, user: ReqParamsResult): Promise<{
-        token: string;
-        email: any;
-        id: number;
-    }>;
-    sendEmailCode(emailDto: EmailDto): Promise<void>;
+    sendEmailCode({ email }: EmailDTO): Promise<void>;
     findUsers(): Promise<import("..").User[]>;
-    findUser(userDto: UserDto): Promise<import("..").User>;
-    findUserByToken(tokenDto: TokenDto): Promise<any>;
-    logout(emailDto: EmailDto): Promise<{
-        email: any;
-    }>;
+    getCurrentUser(user: User): User;
+    logout(user: User): Promise<any>;
 }

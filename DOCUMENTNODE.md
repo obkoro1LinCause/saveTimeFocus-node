@@ -36,7 +36,7 @@
 `middleware`:中间件过滤（跨域、来源检测）
 `guards`: 守卫过滤(鉴权)
 `interceptor:before`:本应用暂无
-`pipe`: 管道（暂无）补充：参数格式化/校验器，参数字段权限/校验，参数挂载到`request`上下文
+`pipe`: 管道：参数格式化/校验器，参数字段权限/校验，参数挂载到`request`上下文
 `controller`:  业务控制器
 `service`：业务服务
 `interceptor:after`: 数据流拦截器、格式化数据
@@ -98,3 +98,11 @@
 **核心（全局）模块**
 - `CacheModule`
 - `DatabaseModule`
+
+
+
+
+
+## todo
+- get接口缓存（redis）
+- 有些接口开白名单 有些接口是黑明单（针对鉴权）

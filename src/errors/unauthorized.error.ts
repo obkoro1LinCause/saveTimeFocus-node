@@ -10,7 +10,7 @@ import { ResponseMessage } from '@app/interfaces/response.interface'
  * @example new HttpUnauthorizedError('error message', new Error())
  */
 export class HttpUnauthorizedError extends UnauthorizedException {
-  constructor(message?: ResponseMessage, error?: any) {
+  constructor(message?: ResponseMessage, error?: ResponseMessage) {
     super(message || TEXT.HTTP_UNAUTHORIZED_TEXT_DEFAULT, error)
   }
 }

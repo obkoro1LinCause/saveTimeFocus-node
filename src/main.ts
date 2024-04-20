@@ -1,4 +1,5 @@
-import helmet from 'helmet'
+import helmet from 'helmet';
+import csurf from 'csurf';
 import bodyParser from 'body-parser'
 import compression from 'compression'
 import 'reflect-metadata';
@@ -20,7 +21,10 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, isProdEnv ? { logger: false } : {});
 
-  app.use(helmet())
+  //防止跨站脚本攻击
+  app.use(helmet()) 
+  //CSRF保护：跨站点请求伪造  这个要如何配置
+  // app.use(csurf());
   app.use(compression())
   app.use(bodyParser.json({ limit: '1mb' }))
   app.use(bodyParser.urlencoded({ extended: false }));

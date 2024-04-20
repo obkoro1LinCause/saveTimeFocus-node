@@ -3,12 +3,12 @@ import { Inject ,BadRequestException,Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { IStrategyOptions, Strategy } from 'passport-local';
 import { ValidationError } from '@app/errors/validation.error';
-import { AuthService } from '@app/module/auth/auth.service';
+import { UserService } from '@app/module/user/user.service';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
   constructor(
-    private readonly authService: AuthService,
+    private readonly userService: UserService,
    ) {
    
     super({
@@ -17,14 +17,17 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     } as IStrategyOptions);
   }
 
+  // 鉴权 验证策略
   async validate(email: string, password: string) {
-    const user = await this.authService.getUser(email);
+    const user = await this.userService.findUserByField(email,'email');
+    
     if (!user) {
-        throw new ValidationError('用户名不正确')
+        throw new ValidationError('emailERR')
     }
     if (!compareSync(password, user.password)) {
-        throw new ValidationError('密码错误');
+        throw new ValidationError('passwordERR');
     }
+    
     return user;
   }
 }
