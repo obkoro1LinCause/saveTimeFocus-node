@@ -2,6 +2,7 @@ import helmet from 'helmet';
 import csurf from 'csurf';
 import bodyParser from 'body-parser'
 import compression from 'compression'
+import passport from 'passport'
 import 'reflect-metadata';
 
 import { NestFactory } from '@nestjs/core';
@@ -28,6 +29,8 @@ async function bootstrap() {
   app.use(compression())
   app.use(bodyParser.json({ limit: '1mb' }))
   app.use(bodyParser.urlencoded({ extended: false }));
+  // https://github.com/jaredhanson/passport/blob/master/CHANGELOG.md#changed
+  app.use(passport.initialize())
   // 应用全局前缀
   app.setGlobalPrefix('/focus_sys');
 

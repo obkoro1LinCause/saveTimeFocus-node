@@ -1,28 +1,28 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { Repository } from "typeorm";
+import { InjectRepository } from '@nestjs/typeorm';
 import { User } from "@app/module";
-import { DB_USER_TOKEN } from "@app/constants/sys.constant";
 import { plainToClass } from "class-transformer";
 import { AuthService } from "@app/module/auth/auth.service";
 import { CacheService } from "@app/processors/cache/cache.service";
 import { EmailService } from "@app/processors/helper/helper.service.email";
-import * as APP_CONFIG from "@app/app.config";
 import { createVipTimestamp, createRandomStr,createHashStr } from "@app/utils/index";
 import { SEND_EMAIL_CODE } from "@app/constants/sys.constant";
 import { SocketGateway } from "@app/module/socket/socket.gateway";
+import { UserInfoDTO,RegisterDTO } from '@app/module/user/user.dto';
 
 @Injectable()
 export class UserService {
   constructor(
-    @Inject(DB_USER_TOKEN) private readonly userRepository: Repository<User>,
     private readonly authService: AuthService,
     private readonly cacheService: CacheService,
     private readonly emailService: EmailService,
-    private readonly socketGateway: SocketGateway
+    private readonly socketGateway: SocketGateway,
+    @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
 
   // 创建用户
-  async createUser(user) {
+  async createUser(user:RegisterDTO) {
     const  { email,inviteCode } = user;
     const bool = await this.findUserByField(email,'email');
     if (!!bool) return Promise.reject('createdERR');
@@ -36,6 +36,7 @@ export class UserService {
     if (inviteCode && !!!inviteIns) return Promise.reject('inviteERR');
     
     // TODO:vip的时间计算
+    // return await this.userRepository.manager.save(initUser);
     return await this.userRepository.save(initUser);
   }
 
@@ -57,7 +58,7 @@ export class UserService {
   }
 
   // 修改密码
-  async changePassword(user) {
+  async changePassword(user:UserInfoDTO) {
     const { email, password } = user;
     const userIns = await this.findUserByField(email,'email');
     if (!userIns) return Promise.reject('emailERR');
@@ -84,7 +85,7 @@ export class UserService {
     });
   }
 
-  async sendEmailCode(email) {
+  async sendEmailCode(email:string) {
     const code = createRandomStr();
     this.cacheService.set(email, code, { ttl: 60 * 30 });
     this.emailService.sendMailAs(SEND_EMAIL_CODE, {

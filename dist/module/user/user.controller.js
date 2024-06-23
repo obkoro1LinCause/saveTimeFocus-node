@@ -19,7 +19,7 @@ const responser_decorator_1 = require("../../decorators/responser.decorator");
 const user_service_1 = require("./user.service");
 const jwt_auth_guard_1 = require("../../guards/jwt.auth.guard");
 const local_auth_guard_1 = require("../../guards/local.auth.guard");
-const reqparams_decorator_1 = require("../../decorators/reqparams.decorator");
+const queryparams_decorator_1 = require("../../decorators/queryparams.decorator");
 let UserController = exports.UserController = class UserController {
     constructor(userService) {
         this.userService = userService;
@@ -70,7 +70,7 @@ __decorate([
     (0, common_1.Post)('/user_login'),
     responser_decorator_1.Responser.handle('post login'),
     __param(0, (0, common_1.Body)()),
-    __param(1, (0, reqparams_decorator_1.ReqParams)('user')),
+    __param(1, (0, queryparams_decorator_1.QueryParams)('user')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [user_dto_1.UserInfoDTO, Object]),
     __metadata("design:returntype", void 0)
@@ -95,7 +95,7 @@ __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Get)('/current_user'),
     responser_decorator_1.Responser.handle('get current_user'),
-    __param(0, (0, reqparams_decorator_1.ReqParams)('user')),
+    __param(0, (0, queryparams_decorator_1.QueryParams)('user')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
@@ -104,7 +104,7 @@ __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Get)('/user_logout'),
     responser_decorator_1.Responser.handle('get user_logout'),
-    __param(0, (0, reqparams_decorator_1.ReqParams)('user')),
+    __param(0, (0, queryparams_decorator_1.QueryParams)('user')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)

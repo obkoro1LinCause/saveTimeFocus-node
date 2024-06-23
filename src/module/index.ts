@@ -1,2 +1,3 @@
-export { User,UserProvider } from '../model/user.model';
-export { Block,BlockProvider} from '../model/block.model';
+export { User,UserDynamicModule } from '@app/model/user.model';
+export { Block,BlockDynamicModule} from '@app/model/block.model';
+export { Task, TaskDynamicModule} from '@app/model/task.model';

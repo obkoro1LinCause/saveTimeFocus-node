@@ -1,12 +1,12 @@
 import { UserInfoDTO, RegisterDTO, EmailDTO } from '@app/module/user/user.dto';
-import { UserService } from './user.service';
-import { type User } from '@app/decorators/reqparams.decorator';
+import { UserService } from '@app/module/user/user.service';
+import { User } from '@app/decorators/queryparams.decorator';
 export declare class UserController {
     private readonly userService;
     constructor(userService: UserService);
     register(user: RegisterDTO): Promise<import("..").User>;
     change(user: UserInfoDTO): Promise<{
-        email: any;
+        email: string;
     }>;
     login(user: UserInfoDTO, { id }: User): Promise<{
         token: unknown;

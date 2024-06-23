@@ -13,6 +13,16 @@ export interface QueryCookies {
   [key: string]: string
 }
 
+
+export interface User {
+  id?:number,
+  email?:string,
+  isVip?:boolean,
+  nickname?:string,
+  registerAt?:string,
+  updateAt?:string
+ }
+
 export interface QueryParamsResult {
   /** original route params */
   params: Record<string, string>
@@ -24,8 +34,12 @@ export interface QueryParamsResult {
   visitor: QueryVisitor
   /** original request */
   request: Request
+  /** */
+  user: User,
   /** user use lang */
-  lang:'en' | 'cn'
+  lang:'en' | 'cn',
+  isAuthenticated:boolean,
+  isUnauthenticated:boolean
 }
 
 /**
@@ -39,8 +53,13 @@ export const QueryParams = createParamDecorator(
     const request = context.switchToHttp().getRequest<Request>();
 
     /** 用户是否存在于session中 即是否已登录 */
+    // from passport middleware
+    // https://github.com/jaredhanson/passport/blob/master/CHANGELOG.md
+    // http://www.passportjs.org/docs/configure/
     const isAuthenticated = request.isAuthenticated()
     const isUnauthenticated = request.isUnauthenticated();
+
+    console.log('====isAuthenticated===',isAuthenticated,isUnauthenticated);
 
     const lang = request.headers['x-lang-mark'] as string;
     const ip =
@@ -57,6 +76,8 @@ export const QueryParams = createParamDecorator(
       referer: request.headers.referer,
     }
 
+    const user: User = request.user;
+
     const result = {
       isAuthenticated,
       isUnauthenticated,
@@ -65,7 +86,8 @@ export const QueryParams = createParamDecorator(
       cookies: request.cookies,
       visitor,
       request,
-      lang
+      lang,
+      user
     }
 
     return field ? result[field] : result

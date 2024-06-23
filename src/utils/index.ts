@@ -149,3 +149,6 @@ export function isUrl (url:string) {
 }
 
 
+
+export const formatNum = (...val: any[]) =>
+  val.map(item => (isNaN(item) ? item : Number(item)));

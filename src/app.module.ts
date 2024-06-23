@@ -18,12 +18,13 @@ import { OriginMiddleware } from '@app/middlewares/origin.middleware'
 import { SocketModule } from '@app/module/socket/socket.module';
 import { UserModule } from '@app/module/user/user.module';
 import { BlockModule } from '@app/module/block/block.module';
+import { TaskModule } from '@app/module/task/task.module';
 
 @Module({
   imports: [
     ThrottlerModule.forRoot([{
-      ttl: minutes(5),  //5 minutes = 300s
-      limit: 300,   //请求300次
+      ttl: minutes(1),  //5 minutes = 300s
+      limit: 40,   //请求300次
       ignoreUserAgents: []
     }]),
     DatabaseModule,
@@ -31,7 +32,8 @@ import { BlockModule } from '@app/module/block/block.module';
     HelperModule,
     SocketModule,
     UserModule, 
-    BlockModule
+    BlockModule,
+    TaskModule
   ],
   controllers: [AppController],
   providers: [

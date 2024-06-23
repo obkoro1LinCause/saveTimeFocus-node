@@ -29,6 +29,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const helmet_1 = __importDefault(require("helmet"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const compression_1 = __importDefault(require("compression"));
+const passport_1 = __importDefault(require("passport"));
 require("reflect-metadata");
 const core_1 = require("@nestjs/core");
 const app_module_1 = require("./app.module");
@@ -47,6 +48,7 @@ async function bootstrap() {
     app.use((0, compression_1.default)());
     app.use(body_parser_1.default.json({ limit: '1mb' }));
     app.use(body_parser_1.default.urlencoded({ extended: false }));
+    app.use(passport_1.default.initialize());
     app.setGlobalPrefix('/focus_sys');
     app.useStaticAssets('public');
     app.useStaticAssets(path_1.default.join(__dirname, '..', 'public'), {

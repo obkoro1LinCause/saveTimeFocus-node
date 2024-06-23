@@ -2,11 +2,10 @@
 import { Controller, Get, Post, Body, Query,Req,Patch, Param, Delete,UseGuards,UsePipes } from '@nestjs/common';
 import { UserInfoDTO,RegisterDTO,EmailDTO } from '@app/module/user/user.dto';
 import { Responser } from '@app/decorators/responser.decorator';
-import { UserService } from './user.service';
+import { UserService } from '@app/module/user/user.service';
 import { JwtAuthGuard } from '@app/guards/jwt.auth.guard';
 import { LocalAuthGuard } from '@app/guards/local.auth.guard';
-import { QueryParams, QueryVisitor } from '@app/decorators/queryparams.decorator';
-import { ReqParams, type User } from '@app/decorators/reqparams.decorator'
+import { QueryParams,User } from '@app/decorators/queryparams.decorator';
 
 
 @Controller()
@@ -29,7 +28,7 @@ export class UserController {
   @UseGuards(LocalAuthGuard)
   @Post('/user_login')
   @Responser.handle('post login')
-  login(@Body() user: UserInfoDTO, @ReqParams('user') { id }: User) {
+  login(@Body() user: UserInfoDTO, @QueryParams('user') { id }: User) {
     return this.userService.loginUser(user,id);
   }
 
@@ -40,7 +39,7 @@ export class UserController {
     return this.userService.sendEmailCode(email);
   }
 
-  // 获取用户信息列表
+  // 获取用户信息列表 @QueryParams(){ isAuthenticated }
   @UseGuards(JwtAuthGuard)
   @Get('/user_list')
   @Responser.handle('get user_list')
@@ -52,7 +51,7 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @Get('/current_user')
   @Responser.handle('get current_user')
-  getCurrentUser(@ReqParams('user') user:User){
+  getCurrentUser(@QueryParams('user') user:User){
     return user;
   }
 
@@ -60,7 +59,7 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @Get('/user_logout')
   @Responser.handle('get user_logout')
-  logout(@ReqParams('user') user:User){
+  logout(@QueryParams('user') user:User){
     const { email,id }:any = user;
     return this.userService.logoutUser(id);
   };

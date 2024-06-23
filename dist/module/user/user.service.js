@@ -15,22 +15,22 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserService = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("typeorm");
+const typeorm_2 = require("@nestjs/typeorm");
 const module_1 = require("..");
-const sys_constant_1 = require("../../constants/sys.constant");
 const class_transformer_1 = require("class-transformer");
 const auth_service_1 = require("../auth/auth.service");
 const cache_service_1 = require("../../processors/cache/cache.service");
 const helper_service_email_1 = require("../../processors/helper/helper.service.email");
 const index_1 = require("../../utils/index");
-const sys_constant_2 = require("../../constants/sys.constant");
+const sys_constant_1 = require("../../constants/sys.constant");
 const socket_gateway_1 = require("../socket/socket.gateway");
 let UserService = exports.UserService = class UserService {
-    constructor(userRepository, authService, cacheService, emailService, socketGateway) {
-        this.userRepository = userRepository;
+    constructor(authService, cacheService, emailService, socketGateway, userRepository) {
         this.authService = authService;
         this.cacheService = cacheService;
         this.emailService = emailService;
         this.socketGateway = socketGateway;
+        this.userRepository = userRepository;
     }
     async createUser(user) {
         const { email, inviteCode } = user;
@@ -83,7 +83,7 @@ let UserService = exports.UserService = class UserService {
     async sendEmailCode(email) {
         const code = (0, index_1.createRandomStr)();
         this.cacheService.set(email, code, { ttl: 60 * 30 });
-        this.emailService.sendMailAs(sys_constant_2.SEND_EMAIL_CODE, {
+        this.emailService.sendMailAs(sys_constant_1.SEND_EMAIL_CODE, {
             to: email,
             subject: "获取注册验证码",
             text: `验证码为${code}`,
@@ -95,11 +95,11 @@ let UserService = exports.UserService = class UserService {
 };
 exports.UserService = UserService = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, common_1.Inject)(sys_constant_1.DB_USER_TOKEN)),
-    __metadata("design:paramtypes", [typeorm_1.Repository,
-        auth_service_1.AuthService,
+    __param(4, (0, typeorm_2.InjectRepository)(module_1.User)),
+    __metadata("design:paramtypes", [auth_service_1.AuthService,
         cache_service_1.CacheService,
         helper_service_email_1.EmailService,
-        socket_gateway_1.SocketGateway])
+        socket_gateway_1.SocketGateway,
+        typeorm_1.Repository])
 ], UserService);
 //# sourceMappingURL=user.service.js.map

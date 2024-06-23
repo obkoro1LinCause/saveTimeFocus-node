@@ -11,6 +11,7 @@ export const isUnverifiableMetaType = (metatype: any): metatype is undefined => 
 }
   /**
    * request params pipe
+   * class-transformer: 普通的js对象 => 实体类的对象
    */
   @Injectable()
   export class ValidationPipe implements PipeTransform<any> {

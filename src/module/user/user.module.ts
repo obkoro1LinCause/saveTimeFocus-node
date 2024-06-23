@@ -1,5 +1,5 @@
 import { Module,forwardRef} from '@nestjs/common';
-import { UserProvider} from '@app/module';
+import { UserDynamicModule } from '@app/module';
 import { SocketModule } from '@app/module/socket/socket.module'
 import { LocalStrategy } from '@app/module/auth/local.strategy';
 import { JwtStrategy } from '@app/module/auth/jwt.strategy';
@@ -12,6 +12,7 @@ import { JWT_CONFIG } from '@app/app.config';
 
 @Module({
   imports:[
+    UserDynamicModule,
     PassportModule,
     JwtModule.register({
       secret: JWT_CONFIG.secret,
@@ -22,7 +23,6 @@ import { JWT_CONFIG } from '@app/app.config';
   controllers: [UserController],
   providers: [
     UserService,
-    UserProvider,
     JwtStrategy,
     LocalStrategy,
     AuthService

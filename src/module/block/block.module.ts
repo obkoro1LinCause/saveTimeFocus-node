@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
-import { BlockProvider, UserProvider} from '@app/module';
+import { BlockDynamicModule, UserDynamicModule} from '@app/module';
 import { BlockService } from './block.service';
 import { BlockController } from './block.controller';
-import { HttpModule } from '@nestjs/axios'
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
   controllers: [BlockController],
-  providers: [BlockService,BlockProvider,UserProvider],
+  providers: [BlockService],
   exports:[BlockService],
-  imports:[HttpModule]
+  imports:[HttpModule,BlockDynamicModule,UserDynamicModule]
 })
 export class BlockModule {}

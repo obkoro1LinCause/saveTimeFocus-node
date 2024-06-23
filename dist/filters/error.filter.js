@@ -29,7 +29,7 @@ let HttpExceptionFilter = exports.HttpExceptionFilter = class HttpExceptionFilte
         if (lodash_1.default.isString(errRes) || lodash_1.default.isString(errRes === null || errRes === void 0 ? void 0 : errRes.error)) {
             const errKey = (errRes === null || errRes === void 0 ? void 0 : errRes.error) || errRes;
             errMsg = (errRes === null || errRes === void 0 ? void 0 : errRes.message) || 'API Error';
-            errorInfo = lang == 'zh' ? language_constant_1.ZH_CN === null || language_constant_1.ZH_CN === void 0 ? void 0 : language_constant_1.ZH_CN[errKey] : language_constant_1.EN_US === null || language_constant_1.EN_US === void 0 ? void 0 : language_constant_1.EN_US[errKey];
+            errorInfo = (lang == 'zh' ? language_constant_1.ZH_CN === null || language_constant_1.ZH_CN === void 0 ? void 0 : language_constant_1.ZH_CN[errKey] : language_constant_1.EN_US === null || language_constant_1.EN_US === void 0 ? void 0 : language_constant_1.EN_US[errKey]) || errRes;
         }
         else if (!lodash_1.default.isString(errRes === null || errRes === void 0 ? void 0 : errRes.error)) {
             errorInfo = (_a = errRes === null || errRes === void 0 ? void 0 : errRes.error) === null || _a === void 0 ? void 0 : _a.response;

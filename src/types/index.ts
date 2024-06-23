@@ -1,3 +1,5 @@
+import { Task } from "@app/module"
+
 export enum EquipmentEnum{
     'Firefox' ='Firefox',
     'Chrome' = 'Chrome',
@@ -30,4 +32,9 @@ export enum TaskStatusEnum {
     'complete' = 1,
     'planned' = 2
 }
-
+export interface TaskInfoMap {
+    parent?:Task,
+    next?:Task,
+    prev?:Task,
+    lastLeaf?:Task
+}

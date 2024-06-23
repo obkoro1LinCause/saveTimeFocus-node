@@ -23,6 +23,7 @@ let UserModule = exports.UserModule = class UserModule {
 exports.UserModule = UserModule = __decorate([
     (0, common_1.Module)({
         imports: [
+            module_1.UserDynamicModule,
             passport_1.PassportModule,
             jwt_1.JwtModule.register({
                 secret: app_config_1.JWT_CONFIG.secret,
@@ -32,7 +33,6 @@ exports.UserModule = UserModule = __decorate([
         controllers: [user_controller_1.UserController],
         providers: [
             user_service_1.UserService,
-            module_1.UserProvider,
             jwt_strategy_1.JwtStrategy,
             local_strategy_1.LocalStrategy,
             auth_service_1.AuthService

@@ -31,7 +31,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     if(lodash.isString(errRes) || lodash.isString(errRes?.error)){
       const errKey = errRes?.error || errRes;
       errMsg = errRes?.message || 'API Error';
-      errorInfo = lang == 'zh' ? ZH_CN?.[errKey] : EN_US?.[errKey];
+      errorInfo = (lang == 'zh' ? ZH_CN?.[errKey] : EN_US?.[errKey]) || errRes;
     } else if(!lodash.isString(errRes?.error)){
       errorInfo = errRes?.error?.response;
       errMsg = errRes?.message;

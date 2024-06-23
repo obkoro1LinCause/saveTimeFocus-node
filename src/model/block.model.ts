@@ -1,6 +1,5 @@
 import { Entity, Column,PrimaryGeneratedColumn,ManyToMany,JoinTable } from 'typeorm';
-import { getProviderByModelClass } from '@app/transformers/model.transformer';
-import { DB_BLOCK_TOKEN } from '@app/constants/sys.constant';
+import { getDynamicModuleByModel } from '@app/transformers/model.transformer';
 import { User } from './user.model';
 
 // 阻止网页表
@@ -79,4 +78,4 @@ export class Block{
   users: User[];
 };
 
-export const BlockProvider = getProviderByModelClass(DB_BLOCK_TOKEN,Block);
+export const BlockDynamicModule = getDynamicModuleByModel(Block);

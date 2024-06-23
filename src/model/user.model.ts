@@ -1,7 +1,6 @@
 import { Entity, Column,PrimaryGeneratedColumn,CreateDateColumn,BeforeInsert,BeforeUpdate,UpdateDateColumn,ManyToMany,JoinTable,OneToMany
  } from 'typeorm';
-import { getProviderByModelClass } from '@app/transformers/model.transformer';
-import { DB_USER_TOKEN } from '@app/constants/sys.constant'
+import { getDynamicModuleByModel } from '@app/transformers/model.transformer';
 import { Block } from './block.model';
 
 // 用户表
@@ -85,4 +84,4 @@ export class User{
 
 };
 
-export const UserProvider = getProviderByModelClass(DB_USER_TOKEN,User);
+export const UserDynamicModule = getDynamicModuleByModel(User);

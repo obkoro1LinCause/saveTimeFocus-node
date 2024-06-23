@@ -1,7 +1,7 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { Injectable,Inject } from "@nestjs/common";
 import { Repository } from "typeorm";
+import { InjectRepository } from '@nestjs/typeorm';
 import { Block, User } from "@app/module";
-import { DB_BLOCK_TOKEN, DB_USER_TOKEN } from "@app/constants/sys.constant";
 import { plainToClass } from "class-transformer";
 import { AuthService } from "../auth/auth.service";
 import { CacheService } from "@app/processors/cache/cache.service";
@@ -10,35 +10,39 @@ import { HttpService } from "@nestjs/axios";
 import { isUrl, isDomain } from "@app/utils/index";
 import * as cheerio from "cheerio";
 import path from "node:path";
+import { REQUEST } from '@nestjs/core';
 
 @Injectable()
 export class BlockService {
-  websiteRes = [];
   constructor(
-    @Inject(DB_BLOCK_TOKEN) private readonly blockRepository: Repository<Block>,
-    @Inject(DB_USER_TOKEN) private readonly userRepository: Repository<User>,
+    @InjectRepository(Block) private blockRepository: Repository<Block>,
+    @InjectRepository(User) private userRepository: Repository<User>,
+    @Inject(REQUEST) private request: Request,
     private readonly httpService: HttpService
+
   ) {}
 
+  websiteRes = [];
   // 添加
   async addBlockSite(user) {
-    const block = new Block();
-    block.domainName = "我是domainName1的的的11sdedewsww";
-    block.domain = "我是domain11s的的dededeeewww";
-    block.users = await this.userRepository.find({
-      where: {
-        id: user.id,
-      },
-    });
-    // // this.blockRepository.save(block)
-    // // const newObj = await this.blockRepository.create({
-    // //     domainName:'我是domainName',
-    // //     domain:'我是domain',
-    // //     users:user
-    // // });
-    // // newObj 中会去除haha字段
-    const res = await this.blockRepository.save(block);
-    return 1;
+    console.log(this.request.url,'====1==1====')
+    // const block = new Block();
+    // block.domainName = "我是domainName1的的的11sdedewsww";
+    // block.domain = "我是domain11s的的dededeeewww";
+    // block.users = await this.userRepository.find({
+    //   where: {
+    //     id: user.id,
+    //   },
+    // });
+    // // // this.blockRepository.save(block)
+    // // // const newObj = await this.blockRepository.create({
+    // // //     domainName:'我是domainName',
+    // // //     domain:'我是domain',
+    // // //     users:user
+    // // // });
+    // // // newObj 中会去除haha字段
+    // const res = await this.blockRepository.save(block);
+    // return 1;
   }
   // 更新
   updateBlockSite() {}
@@ -105,18 +109,19 @@ export class BlockService {
 
   // 查询用户的阻止列表
   async findBlockSite(user) {
-    const blocks = await this.blockRepository.find({
-      relations: {
-        users: true,
-      },
-    });
+    console.log(this.request.url,'=====this===')
+    // const blocks = await this.blockRepository.find({
+    //   relations: {
+    //     users: true,
+    //   },
+    // });
 
     // blocks.filter((item:any)=>{
     //     item.users.length
     // })
 
-    console.log(user.id);
-    return blocks;
+    // console.log(user.id);
+    // return blocks;
     // const users = await this.userRepository.find({
     //     where:{
     //         id:user.id

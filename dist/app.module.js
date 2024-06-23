@@ -20,6 +20,7 @@ const origin_middleware_1 = require("./middlewares/origin.middleware");
 const socket_module_1 = require("./module/socket/socket.module");
 const user_module_1 = require("./module/user/user.module");
 const block_module_1 = require("./module/block/block.module");
+const task_module_1 = require("./module/task/task.module");
 let AppModule = exports.AppModule = class AppModule {
     configure(consumer) {
         consumer.apply(cors_middleware_1.CorsMiddleware, origin_middleware_1.OriginMiddleware).forRoutes('*');
@@ -29,8 +30,8 @@ exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
             throttler_1.ThrottlerModule.forRoot([{
-                    ttl: (0, throttler_1.minutes)(5),
-                    limit: 300,
+                    ttl: (0, throttler_1.minutes)(1),
+                    limit: 40,
                     ignoreUserAgents: []
                 }]),
             mysql_module_1.DatabaseModule,
@@ -38,7 +39,8 @@ exports.AppModule = AppModule = __decorate([
             helper_module_1.HelperModule,
             socket_module_1.SocketModule,
             user_module_1.UserModule,
-            block_module_1.BlockModule
+            block_module_1.BlockModule,
+            task_module_1.TaskModule
         ],
         controllers: [app_controller_1.AppController],
         providers: [

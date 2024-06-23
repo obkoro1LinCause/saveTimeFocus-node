@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { DB_USER_TOKEN } from '@app/constants/sys.constant';
 
 @Injectable()
 export class AuthService {
